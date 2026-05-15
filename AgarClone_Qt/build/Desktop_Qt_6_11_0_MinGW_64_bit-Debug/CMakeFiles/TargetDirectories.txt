@@ -1,0 +1,9 @@
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/AgarClone.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/AgarClone_autogen_timestamp_deps.dir
+D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/AgarClone_autogen.dir

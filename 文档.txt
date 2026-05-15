@@ -1,0 +1,325 @@
+项目文档：球球大作战风格游戏（C++/Qt Windows 完整版）
+
+1. 项目概述
+
+1.1 项目名称
+
+Agar.io Clone – 球球大作战完整复刻版
+
+1.2 项目目标
+
+基于提供的 Python + Pygame 完整实现，使用 C++17 与 Qt 6 框架在 Windows 平台开发一款单人游戏。玩家球体成长、分裂、吐孢、多种技能与危险物、AI 等级与决策、同体吸引合并、空间网格碰撞优化等。代码结构清晰，性能稳定 60 FPS。
+
+1.3 技术特点
+
+· 语言：C++17
+· 图形框架：Qt Widgets + QGraphicsView / QGraphicsScene / QGraphicsItem
+· 构建工具：CMake
+· 输入：键盘（WASD、空格、E、ESC、M、回车）
+· 动画：非必要不添加额外动画，保持与原版一致的瞬态反馈；但可使用 QPropertyAnimation 实现分裂/合并等平滑过渡（可选）
+
+---
+
+2. 功能需求（完整保留原版特性）
+
+2.1 核心玩法
+
+· 成长：玩家通过吞食豆子、技能球、抛射物以及比自己小的 AI 球体增加质量。质量 = π × 半径²，半径越大移动速度越低（速度 = 基础速度 × sqrt(最小半径 / 当前半径)）。
+· 捕食规则：若球体 A 半径 > 球体 B 半径 × 1.1，且 B 无护盾，则 A 可吞食 B。
+· 分裂：半径 ≥ 18 时，按空格分裂。新球体半径 = 原半径 / √2，朝移动方向弹出。分裂后同源球体之间会相互吸引并最终合并。
+· 吐孢：半径 ≥ 25 时，按 E 键吐出一个孢子（半径 8），自身半径减少 3。孢子可被任何球体吞食。
+· 胜利条件：玩家所有球体总半径 ≥ 2000。
+· 失败条件：玩家所有球体被吞食。
+
+2.2 实体列表
+
+实体 属性 行为
+豆子 (Food) 半径 3~8，随机颜色 静止，被吞食后在地图随机位置重生
+技能球 (SkillBall) 半径 12，带脉冲光效 每 5 秒概率生成，最多 8 个；存在 30 秒后消失。触碰后赋予对应技能
+危险物 (Hazard) 半径 50，三种类型 每 15 秒概率生成，最多 8 个；存在 45 秒。触碰后施加减益效果
+抛射物 (EjectBall) 半径 8，与吐孢者同色 以 8 像素/帧速度飞出，逐渐减速，存在 20 秒
+AI 球体 (Ball) 半径 15~60，随机颜色 分 1、2、3 级，自主决策移动、吃豆、躲避、追击、分裂
+
+2.3 技能与负面效果
+
+技能（Skill）
+
+技能名 效果 持续时间 颜色
+加速 (Speed) 移动速度 ×1.5 5 秒 黄色
+护盾 (Shield) 免疫吞食与危险物 3 秒 青色
+巨化 (Grow) 半径 ×1.3（结束后恢复） 4 秒 紫色
+隐身 (Invisible) 敌人无法看到/攻击该球体 6 秒 灰色
+磁力 (Magnet) 自动吸引附近豆子（范围半径 ×3） 5 秒 橙色
+
+危险物（Hazard）
+
+类型 效果 持续时间 颜色
+炸弹 (Bomb) 半径瞬间减少 15% 瞬时 红色
+陷阱 (Trap) 移动速度 ×0.5 3 秒 棕色
+毒雾 (Poison) 每秒减少半径 2  4 秒 毒绿色
+
+· 拥有护盾时免疫所有危险物及吞食。
+· 新生成的玩家球体拥有 3 秒无敌时间（闪烁提示）。
+
+2.4 AI 行为系统
+
+等级差异
+
+等级 反应时间 决策间隔 转向速度 分裂倾向
+1 0.5 秒 0.4 秒 2.0 rad/s 无
+2 0.3 秒 0.2 秒 3.0 rad/s 有（猎食或逃生时）
+3 0.15 秒 0.1 秒 5.0 rad/s 有（更激进）
+
+决策流程（每 decision_interval 执行一次）
+
+1. 威胁检测：检测半径大于自己 1.1 倍的球体，按危险程度排序，若威胁距离 < 自身半径×6，则朝反方向逃离。
+2. 猎物检测：检测半径小于自己 0.9 倍的球体，按价值（猎物半径/距离）排序，朝最有价值猎物移动。
+3. 巡逻：若无威胁与猎物，随机选择地图内巡逻点移动。
+4. 分裂决策（等级≥2）：若目标猎物距离 < 自身半径×4 且自身半径大于猎物半径 1.5 倍，则朝猎物方向分裂；若威胁距离 < 自身半径×3，则朝逃离方向分裂。
+
+移动与转向
+
+· 使用 current_direction 和 target_direction，每帧平滑转向（最大转角 = turn_speed * dt）。
+· 同 AI 组（相同 ai_id）球体之间有相互吸引力，促使合并。
+
+2.5 同源球体合并机制
+
+· 属于同一玩家或同一 AI 组的多个球体会产生吸引力，随时间增大逐渐靠近。
+· 当两个同源球体圆心距离 < 两者半径之和时，会自动合并为一个球体（半径 = sqrt(r1² + r2²)）。
+· 吸引力=常数引力+距离引力*距离^2+时间初始引力（随分裂时间衰减）。
+
+2.6 空间网格优化
+
+· 采用 SpatialGrid 类，单元格大小 200×200。
+· 每帧更新所有球体到网格，碰撞检测时只检查相邻单元格内的对象，避免 O(N²) 复杂度。
+
+2.7 动态摄像机
+
+· 跟随玩家所有球体的中心点（质量加权平均）。
+· 根据玩家平均半径动态缩放：scale = 1.0 / (1 + max(0, (avgRadius - 20) / 80))，范围限制 [0.5, 1.5]。
+· 缩放平滑插值（可选，原版使用线性平滑）。
+
+2.8 UI 与交互（Windows 键盘 + 鼠标）
+
+功能 按键
+移动 WASD
+分裂 空格
+吐孢 E
+暂停/继续 ESC
+返回主菜单 M（在暂停/结束/胜利界面）
+开始/重新开始 回车
+退出游戏 关闭窗口
+
+HUD 显示（左上角）：
+
+· 分数（吞食 AI + 豆子得分）
+· 生存时间（秒）
+· 总质量（所有玩家球体质量和）
+· 平均半径
+· 剩余 AI 数量
+· 分裂状态提示（可分裂/体积不足）
+· 当前技能及剩余时间
+· 当前负面效果及剩余时间
+· 无敌剩余时间（若有）
+
+菜单界面：
+
+· 主菜单：标题、操作说明（PC 键盘）、开始提示
+· 暂停界面：半透明遮罩，显示“暂停”，按 ESC 继续，按 M 回主菜单
+· 游戏结束界面：最终分数、生存时间、重新开始（回车）或回主菜单（M）
+· 胜利界面：同样显示分数和时间，提供重新开始或回主菜单
+
+---
+
+3. 技术架构
+
+3.1 技术栈选择理由
+
+· Qt 6：成熟的跨平台 GUI 框架，QGraphicsView 专为 2D 游戏设计，支持场景图、变换、碰撞检测。
+· C++17：性能高，内存可控，适合游戏开发。
+· CMake：现代化构建工具，便于管理项目。
+
+3.2 项目结构
+
+```
+AgarClone_Qt/
+├── CMakeLists.txt
+├── main.cpp
+├── Constants.h
+├── SpatialGrid.h / .cpp
+├── Entity.h (抽象基类)
+├── Ball.h / .cpp
+├── Food.h / .cpp
+├── SkillBall.h / .cpp
+├── Hazard.h / .cpp
+├── EjectBall.h / .cpp
+├── AIController.h / .cpp
+├── GameScene.h / .cpp
+├── GameView.h / .cpp
+├── UIManager.h / .cpp
+└── resources/ (无图片资源)
+```
+
+3.3 核心类设计
+
+Entity (QGraphicsEllipseItem)
+
+· 提供位置、半径、颜色、是否存活等基本属性。
+· 虚函数 update(qreal dt)、onEaten(Entity* eater)。
+
+Ball : public Entity
+
+· 成员：vx, vy, isPlayer, aiLevel, aiId, splitTimer, mergeTimer, invincibleTimer, skill, skillTimer, debuff, debuffTimer, lastDx, lastDy。
+· 方法：move(dx, dy, dt), split(direction), eject(), eat(Entity*), applySkill(), applyDebuff(), isInvincible(), hasShield()。
+· 重写 paint() 实现无敌闪烁、技能/负面效果光环。
+
+SpatialGrid
+
+· 使用 QHash<QPair<int,int>, QVector<Entity*>>。
+· 提供 clear()，add(Entity*)，getNearby(Entity*)。
+
+AIController
+
+· 静态方法 updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<Food*>& foods, qreal dt)。
+· 内部维护每个 AI 的决策计时器、方向平滑状态（可使用 QHash<Ball*, AIState>）。
+
+GameScene : public QGraphicsScene
+
+· 管理所有实体列表：playerBalls，aiBalls，foods，skillBalls，hazards，ejectBalls。
+· 每帧调用 updateGame(qreal dt)：
+  1. 处理玩家输入（从 GameView 获取方向）
+  2. 更新玩家和 AI 移动（玩家调用 move，AI 通过 AIController 计算方向后调用 move）
+  3. 更新抛射物、技能球、危险物的生命周期
+  4. 更新所有同源球体吸引力（applyAttraction）
+  5. 碰撞检测（使用 SpatialGrid 优化）
+  6. 生成新豆子、AI 补充
+  7. 检查胜利/失败，更新 HUD
+· 提供 spawnFood(int count)，spawnSkillBall()，spawnHazard()，spawnAIBall()。
+
+GameView : public QGraphicsView
+
+· 持有 GameScene 指针。
+· 重写 keyPressEvent，mouseMoveEvent（鼠标控制移动方向）。
+· 提供 updateCamera() 方法，根据玩家中心点更新变换。
+· 管理游戏状态机（State { Menu, Playing, Paused, GameOver, Victory }）。
+· 控制 QTimer 驱动场景更新。
+
+UIManager
+
+· 管理 HUD 文本项（QGraphicsTextItem）。
+· 提供 showMenu()，showGameOver(int score, float time)，showVictory(int score, float time)，hideUI()。
+· 使用独立 QWidget 或场景内绘制矩形+文本（为简单，建议全部在场景内完成）。
+
+3.4 游戏主循环
+
+· GameView 中启动 QTimer，间隔 16ms，连接槽函数：
+  ```cpp
+  void GameView::advanceGame() {
+      if (state == Playing) {
+          scene->updateGame(dt);
+          updateCamera();
+      }
+      updateUI(); // 刷新 HUD 数值
+  }
+  ```
+
+3.5 碰撞检测与响应流程（伪代码）
+
+```cpp
+void GameScene::checkCollisions() {
+    // 1. 更新空间网格
+    spatialGrid.clear();
+    for (ball : allBalls) spatialGrid.add(ball);
+    
+    // 2. 球-食物碰撞
+    for (ball : allBalls) {
+        for (food : foods) {
+            if (collide(ball, food)) {
+                ball.eat(food); food.alive = false;
+                if (ball.isPlayer) score++;
+            }
+        }
+    }
+    
+    // 3. 球-技能/危险物/抛射物碰撞（类似）
+    
+    // 4. 球-球碰撞（使用网格减少检查）
+    for (ball1 : allBalls) {
+        for (ball2 : spatialGrid.getNearby(ball1)) {
+            if (ball1 == ball2) continue;
+            // 同源合并
+            if (sameOwner(ball1, ball2) && canMerge) {
+                merge(ball1, ball2);
+            } 
+            // 吞食
+            else if (ball1.radius > ball2.radius * EAT_RATIO && !ball2.hasShield()) {
+                ball1.eat(ball2); ball2.alive = false;
+            }
+            // 反向吞食类似
+        }
+    }
+    
+    // 5. 移除死亡实体，补充新实体
+}
+```
+
+---
+
+4. 开发计划与工作量
+
+4.1 阶段任务（共约 2500~3000 行 C++ 代码）
+
+阶段 任务 预估代码行数
+1 搭建 CMake 工程，创建空窗口，显示一个可移动的圆形 150
+2 实现豆子生成与碰撞，球体成长与速度关联 200
+3 实现空间网格，优化碰撞检测 150
+4 实现 AI 基础移动（漫游、吃豆），加入简单躲避 300
+5 实现分裂与吐孢机制 250
+6 实现吞食规则与同源合并 200
+7 实现技能系统（5 种技能）与技能球生成 350
+8 实现危险物系统（3 种）与负面效果 300
+9 完成 AI 完整决策（威胁/猎物评估、分裂策略、等级差异） 350
+10 实现动态摄像机与 HUD 200
+11 实现所有 UI 界面（菜单、暂停、结束、胜利） 250
+12 测试、调试、代码优化 100
+总计  ~2850 行
+
+4.2 单人开发时间估算
+
+· 每天有效编码 4 小时，约 15~18 天。
+· 若已有 Pygame 代码参考且 Qt 熟练，可缩短至 12 天。
+
+---
+
+5. 验收标准
+
+编号 检查项
+1 游戏启动显示主菜单，按回车进入游戏。
+2 玩家球体跟随鼠标或 WASD 移动，边界限制正确。
+3 豆子可被吞食，玩家半径增大，速度变慢。
+4 按空格分裂（半径≥18），分裂后两个球相互吸引，可合并。
+5 按 E 吐孢（半径≥25），孢子可被吞食。
+6 AI 有 3 个等级，不同等级反应速度、决策频率、分裂倾向差异明显。
+7 AI 会主动吃豆，躲避比自己大的玩家，追击比自己小的玩家。
+8 AI 在合适时机使用分裂（等级≥2）。
+9 同 AI 组球体相互吸引合并。
+10 技能球出现（彩色脉冲），触碰后获得对应技能效果：加速、护盾、巨化、隐身、磁力。效果持续正确。
+11 危险物出现（炸弹、陷阱、毒雾），触碰后产生对应减益效果（炸弹瞬间减半径，陷阱减速，毒雾持续掉血）。
+12 玩家吞食 AI 加分，吞食豆子加分，生存时间每秒加 1 分。
+13 玩家总半径达到 2000 显示胜利界面。
+14 玩家所有球被吞显示游戏结束界面，显示最终分数和生存时间。
+15 按 ESC 暂停/继续，按 M 返回主菜单。
+16 游戏稳定 60 FPS，无内存泄漏，碰撞检测无错误吞食。
+
+---
+
+6. 风险与应对
+
+风险 概率 应对
+Qt collidingItems() 在实体>300 时性能下降 中 坚持使用空间网格，限制 AI ≤ 30，豆子 ≤ 200，技能+危险物 ≤ 16。
+同源吸引力合并导致异常抖动 中 使用平滑吸引力公式（原 Python 代码已验证），合并时半径计算正确。
+AI 分裂决策过于复杂导致 bug 高 先实现等级 1 AI，等级 2/3 逐步添加；分裂决策加入计时器避免每帧分裂。
+内存泄漏（图元未正确删除） 低 使用 QGraphicsScene 自动管理，调用 deleteLater()。
+缩放摄像机时文本 HUD 也缩放 低 HUD 不要添加到 QGraphicsScene，而是直接绘制在 QGraphicsView 的覆盖层（drawForeground）或使用独立 QWidget 悬浮。
+
+---

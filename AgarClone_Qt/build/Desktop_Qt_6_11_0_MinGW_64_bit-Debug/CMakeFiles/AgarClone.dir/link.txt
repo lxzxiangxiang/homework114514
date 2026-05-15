@@ -1,0 +1,3 @@
+D:\anzhuangweizhi\qt\Tools\CMake_64\bin\cmake.exe -E rm -f CMakeFiles\AgarClone.dir/objects.a
+D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\ar.exe qc CMakeFiles\AgarClone.dir/objects.a @CMakeFiles\AgarClone.dir\objects1.rsp
+D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\AgarClone.dir/objects.a -Wl,--no-whole-archive -o AgarClone.exe -Wl,--out-implib,libAgarClone.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\AgarClone.dir\linkLibs.rsp
