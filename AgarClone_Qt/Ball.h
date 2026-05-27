@@ -1,9 +1,16 @@
 #pragma once
 
 #include "Entity.h"
+#include <QVector>
 
 class Ball : public Entity {
 public:
+    struct ActiveEffect {
+        EffectType type;
+        qreal timer;
+        qreal growOriginalMass = 0;
+    };
+
     Ball(qreal mass, QColor color, bool isPlayer, int aiLevel = 0);
 
     void move(qreal dx, qreal dy, qreal dt);
@@ -12,7 +19,10 @@ public:
     class EjectBall* eject();
     void eat(Entity* target);
     void applyEffect(EffectType effect, const QList<Ball*>& allBalls);
+    void addInitialEffect(EffectType t, qreal timer);
     bool hasShield() const;
+    bool hasEffect(EffectType t) const;
+    const QVector<ActiveEffect>& effects() const { return m_effects; }
 
     void update(qreal dt) override;
     void onEaten(Entity* eater) override;
@@ -23,11 +33,11 @@ public:
     int aiLevel;
     int aiId;
 
-    EffectType effect = EffectType::None;
-    qreal effectTimer = 0;
-
     qreal lastDx = 0, lastDy = 0;
-    qreal growOriginalMass = 0;
 
     Ball* pendingSplitBall = nullptr;
+
+private:
+    void removeEffect(EffectType t);
+    QVector<ActiveEffect> m_effects;
 };

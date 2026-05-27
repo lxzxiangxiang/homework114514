@@ -160,16 +160,16 @@ namespace AI {
 // ==========================================================================
 namespace Camera {
     inline constexpr float ZOOM_MIN  = 0.5f;
-    inline constexpr float ZOOM_MAX  = 1.5f;
-    inline constexpr float ZOOM_LERP = 0.08f;  // 缩放平滑插值
-    inline constexpr float CENTER_LERP = 0.1f; // 中心点平滑插值
+    inline constexpr float ZOOM_MAX  = 3.0f;
+    inline constexpr float ZOOM_LERP = 0.15f;
+    inline constexpr float CENTER_LERP = 0.2f;
 }
 
 // ==========================================================================
 // Gameplay
 // ==========================================================================
 namespace Gameplay {
-    inline constexpr float VICTORY_TOTAL_RADIUS = 2000.0f;
+    inline constexpr float VICTORY_TOTAL_RADIUS = 300.0f;
     inline constexpr int SPLIT_DELAY_MS = 100;  // 分裂防连发
 }
 

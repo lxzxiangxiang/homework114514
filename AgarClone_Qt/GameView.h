@@ -52,7 +52,7 @@ private:
     void showGameOver(int score, int survivalTime);
     void showVictory(int score, int survivalTime);
     void hideAllUI();
-    void updateHUD(qreal score, qreal survivalTime, qreal avgRadius,
+    void updateHUD(qreal score, qreal survivalTime, qreal totalMass,
                    int aiCount, const QString& effects, bool canSplit);
     void showResultOverlay(QGraphicsRectItem*& overlay, QGraphicsTextItem*& titleItem,
                            const QString& titleText, const QColor& titleColor,

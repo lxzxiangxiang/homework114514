@@ -13,14 +13,24 @@ Ball::Ball(qreal mass, QColor color, bool isPlayer, int aiLevel)
 {
 }
 
+void Ball::removeEffect(EffectType t)
+{
+    for (int i = 0; i < m_effects.size(); ++i) {
+        if (m_effects[i].type == t) {
+            m_effects.removeAt(i);
+            return;
+        }
+    }
+}
+
 qreal Ball::speed() const
 {
     qreal r = radius();
     qreal safeR = qMax(r, GameConstants::World::MIN_RADIUS);
     qreal base = GameConstants::Ball::BASE_SPEED * std::sqrt(GameConstants::World::MIN_RADIUS / safeR);
-    if (effect == EffectType::Speed && effectTimer > 0)
+    if (hasEffect(EffectType::Speed))
         base *= GameConstants::Ball::SPEED_MULTIPLIER;
-    if (effect == EffectType::Trap && effectTimer > 0)
+    if (hasEffect(EffectType::Trap))
         base *= GameConstants::Ball::TRAP_SPEED_MULTIPLIER;
     return base;
 }
@@ -59,15 +69,11 @@ Ball* Ball::split(QPointF direction)
 
     qreal newMass = m_mass * GameConstants::Ball::SPLIT_MASS_RETAIN;
     m_mass = newMass;
-    qreal r = radius();
-    qreal oldR = std::sqrt((m_mass + newMass) / M_PI);
     setMass(m_mass);
 
     auto* nb = new Ball(newMass, m_color, isPlayer, aiLevel);
     nb->aiId = aiId;
-    nb->effect = effect;
-    nb->effectTimer = effectTimer;
-    nb->growOriginalMass = growOriginalMass;
+    nb->m_effects = m_effects;
 
     QPointF dir = splitDir(direction, lastDx, lastDy);
     qreal jitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.4;
@@ -98,65 +104,91 @@ void Ball::eat(Entity* target)
 
 void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
 {
+    if (hasShield() && isDebuff(et)) return;
+
+    qreal timer = 0;
     switch (et) {
-    case EffectType::Speed:
-        effectTimer = GameConstants::EffectDuration::SPEED;
-        break;
-    case EffectType::Shield:
-        effectTimer = GameConstants::EffectDuration::SHIELD;
-        break;
-    case EffectType::Grow:
-        effectTimer = GameConstants::EffectDuration::GROW;
-        growOriginalMass = m_mass;
-        m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
-        break;
-    case EffectType::Invisible:
-        effectTimer = GameConstants::EffectDuration::INVISIBLE;
-        break;
-    case EffectType::Magnet:
-        effectTimer = GameConstants::EffectDuration::MAGNET;
-        break;
-    case EffectType::Bomb:
-        m_mass *= GameConstants::Ball::Bomb::RADIUS_RATIO * GameConstants::Ball::Bomb::RADIUS_RATIO;
-        return;
-    case EffectType::Trap:
-        effectTimer = GameConstants::EffectDuration::TRAP;
-        break;
-    case EffectType::Poison:
-        effectTimer = GameConstants::EffectDuration::POISON;
-        break;
+    case EffectType::Speed:     timer = GameConstants::EffectDuration::SPEED; break;
+    case EffectType::Shield:    timer = GameConstants::EffectDuration::SHIELD; break;
+    case EffectType::Grow:      timer = GameConstants::EffectDuration::GROW; break;
+    case EffectType::Invisible: timer = GameConstants::EffectDuration::INVISIBLE; break;
+    case EffectType::Magnet:    timer = GameConstants::EffectDuration::MAGNET; break;
+    case EffectType::Bomb:      break;
+    case EffectType::Trap:      timer = GameConstants::EffectDuration::TRAP; break;
+    case EffectType::Poison:    timer = GameConstants::EffectDuration::POISON; break;
     default: return;
     }
-    effect = et;
+
+    if (et == EffectType::Bomb) {
+        m_mass *= GameConstants::Ball::Bomb::RADIUS_RATIO * GameConstants::Ball::Bomb::RADIUS_RATIO;
+        qreal minMass = M_PI * GameConstants::World::MIN_RADIUS * GameConstants::World::MIN_RADIUS;
+        if (m_mass < minMass) m_mass = minMass;
+        return;
+    }
+
+    if (et == EffectType::Grow) {
+        m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
+    }
+
+    ActiveEffect ae;
+    ae.type = et;
+    ae.timer = timer;
+    ae.growOriginalMass = (et == EffectType::Grow) ? m_mass : 0;
+    m_effects.append(ae);
 
     for (Ball* other : allBalls) {
-        if (other != this && other->aiId == aiId && aiId > 0 && other->isAlive()) {
-            other->effect = effect;
-            other->effectTimer = effectTimer;
-            other->growOriginalMass = growOriginalMass;
+        if (other == this || !other->isAlive()) continue;
+        bool sameGroup = (aiId > 0 && other->aiId == aiId) || (isPlayer && other->isPlayer);
+        if (!sameGroup) continue;
+
+        if (et == EffectType::Grow) {
+            other->m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
         }
+        ActiveEffect oae;
+        oae.type = et;
+        oae.timer = timer;
+        oae.growOriginalMass = (et == EffectType::Grow) ? other->m_mass : 0;
+        other->m_effects.append(oae);
+    }
+}
+
+void Ball::addInitialEffect(EffectType t, qreal timer)
+{
+    ActiveEffect ae;
+    ae.type = t;
+    ae.timer = timer;
+    if (t == EffectType::Shield) {
+        m_effects.append(ae);
     }
 }
 
 bool Ball::hasShield() const
 {
-    return effect == EffectType::Shield && effectTimer > 0;
+    return hasEffect(EffectType::Shield);
+}
+
+bool Ball::hasEffect(EffectType t) const
+{
+    for (const auto& ae : m_effects) {
+        if (ae.type == t) return true;
+    }
+    return false;
 }
 
 void Ball::update(qreal dt)
 {
-    if (effectTimer > 0) {
-        effectTimer -= dt;
-        if (effectTimer <= 0) {
-            if (effect == EffectType::Grow && growOriginalMass > 0) {
+    for (int i = m_effects.size() - 1; i >= 0; --i) {
+        ActiveEffect& ae = m_effects[i];
+        ae.timer -= dt;
+        if (ae.timer <= 0) {
+            if (ae.type == EffectType::Grow && ae.growOriginalMass > 0) {
                 qreal growFactor = GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
-                qreal expectedMass = growOriginalMass * growFactor;
+                qreal expectedMass = ae.growOriginalMass * growFactor;
                 if (m_mass > expectedMass) m_mass /= growFactor;
-                else m_mass = growOriginalMass;
-                growOriginalMass = 0;
+                else m_mass = ae.growOriginalMass;
             }
-            effect = EffectType::None;
-        } else if (effect == EffectType::Poison) {
+            m_effects.removeAt(i);
+        } else if (ae.type == EffectType::Poison) {
             qreal r = radius();
             qreal newR = qMax(r - GameConstants::Ball::Poison::RADIUS_PER_SEC * dt, 1.0);
             m_mass = M_PI * newR * newR;
@@ -179,16 +211,14 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     qreal r = radius();
     QColor drawColor = m_color;
 
-    // Invincible flash
-    if (effect == EffectType::Shield && effectTimer > 0) {
-        qreal flash = std::abs(std::sin(effectTimer * 10.0));
+    if (hasEffect(EffectType::Shield)) {
+        qreal flash = std::abs(std::sin(m_effects[0].timer * 10.0));
         drawColor = QColor(
             qMin(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
             qMin(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
             qMin(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
-        // Shield glow
         qreal glowR = r * 1.3;
-        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(effectTimer * 5.0)));
+        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(m_effects[0].timer * 5.0)));
         painter->setPen(Qt::NoPen);
         painter->drawEllipse(QPointF(0, 0), glowR, glowR);
     }
@@ -197,16 +227,13 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     painter->setPen(Qt::NoPen);
     painter->drawEllipse(QPointF(0, 0), r, r);
 
-    // Invisible
-    if (effect == EffectType::Invisible && effectTimer > 0) {
+    if (hasEffect(EffectType::Invisible)) {
         painter->setOpacity(0.3);
     }
 
-    // Eye
     painter->setBrush(Qt::white);
     painter->drawEllipse(QPointF(0, 0), r * 0.3, r * 0.3);
 
-    // Player outline + cross
     if (isPlayer) {
         painter->setPen(QPen(QColor(100, 255, 100), 3));
         painter->setBrush(Qt::NoBrush);

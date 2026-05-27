@@ -26,8 +26,7 @@ GameScene::GameScene(QObject* parent)
 
     auto* player = new Ball(M_PI * 15.0 * 15.0, QColor(255, 80, 80), true, 0);
     player->setPos(GameConstants::World::MAP_WIDTH / 2, GameConstants::World::MAP_HEIGHT / 2);
-    player->effect = EffectType::Shield;
-    player->effectTimer = 3.0f;
+    player->addInitialEffect(EffectType::Shield, 3.0f);
     addItem(player);
     playerBalls.append(player);
 }
@@ -159,7 +158,7 @@ void GameScene::updateAllTimers(const QList<Ball*>& allBalls, qreal dt)
 void GameScene::updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt)
 {
     for (Ball* ball : allBalls) {
-        if (!ball->isAlive() || ball->effect != EffectType::Magnet || ball->effectTimer <= 0) continue;
+        if (!ball->isAlive() || !ball->hasEffect(EffectType::Magnet)) continue;
         for (Food* food : foods) {
             if (!food->isAlive()) continue;
             qreal dx = ball->x() - food->x();
@@ -244,8 +243,7 @@ void GameScene::spawnAIBall(int targetId)
 
     auto* ai = new Ball(M_PI * radius * radius, color, false, aiLevel);
     ai->aiId = targetId ? targetId : m_nextAiId++;
-    ai->effect = EffectType::Shield;
-    ai->effectTimer = 3.0f;
+    ai->addInitialEffect(EffectType::Shield, 3.0f);
     qreal x = static_cast<qreal>(GameConstants::World::MAP_WIDTH) * QRandomGenerator::global()->generateDouble();
     qreal y = static_cast<qreal>(GameConstants::World::MAP_HEIGHT) * QRandomGenerator::global()->generateDouble();
     ai->setPos(x, y);

@@ -63,7 +63,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
         for (Ball* other : allBalls) {
             if (other == ai || !other->isAlive())
                 continue;
-            if (other->effect == EffectType::Invisible && other->effectTimer > 0)
+            if (other->hasEffect(EffectType::Invisible))
                 continue;
             if (other->radius() <= myRadius * GameConstants::Ball::EAT_RATIO)
                 continue;
@@ -85,8 +85,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
         for (Ball* other : allBalls) {
             if (other == ai || !other->isAlive())
                 continue;
-            if (other->effect == EffectType::Invisible && other->effectTimer > 0)
-                continue;
+            if (other->hasEffect(EffectType::Invisible)) continue;
             if (other->radius() >= myRadius * 0.9)
                 continue;
             QPointF delta = other->pos() - myPos;
@@ -169,9 +168,6 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 
     // 根据新角度计算方向向量
     state.currentDirection = QPointF(std::cos(newAngle), std::sin(newAngle));
-
-    // 执行移动
-    ai->move(state.currentDirection.x(), state.currentDirection.y(), dt);
 }
 
 QPointF AIController::getLastDirection(Ball* ai)

@@ -19,7 +19,7 @@ GameView::GameView(QWidget* parent)
     createMenuItems();
 
     // 窗口配置
-    setWindowTitle(QString::fromUtf8("\u7403\u7403\u5927\u4E71\u6597"));
+    setWindowTitle(QStringLiteral("球球大乱斗"));
     resize(GameConstants::Window::WIDTH, GameConstants::Window::HEIGHT);
     setBackgroundBrush(QColor(30, 30, 30));
 
@@ -58,57 +58,57 @@ void GameView::advanceGame()
     m_gameScene->updateGame(0.016);
 
     // 3. 计算玩家总半径并聚合效果数据（一次遍历）
-    qreal totalRadius = 0;
+    qreal totalMass = 0;
     bool canSplit = false;
     int activeCount = 0;
     QStringList effectParts;
+    QSet<EffectType> seenEffects;
 
     for (Ball* ball : m_gameScene->playerBalls) {
         if (!ball->isAlive()) continue;
-        qreal r = ball->radius();
-        totalRadius += r;
+        totalMass += ball->mass();
         activeCount++;
-        if (r >= GameConstants::Ball::SPLIT_THRESHOLD) canSplit = true;
+        if (ball->radius() >= GameConstants::Ball::SPLIT_THRESHOLD) canSplit = true;
 
-        if (ball->effect != EffectType::None) {
-            QString name;
-            switch (ball->effect) {
-            case EffectType::Speed:     name = QString::fromUtf8("\u52A0\u901F"); break;
-            case EffectType::Shield:    name = QString::fromUtf8("\u62A4\u76FE"); break;
-            case EffectType::Grow:      name = QString::fromUtf8("\u5DE8\u5927"); break;
-            case EffectType::Invisible: name = QString::fromUtf8("\u9690\u8EAB"); break;
-            case EffectType::Magnet:    name = QString::fromUtf8("\u78C1\u529B"); break;
-            case EffectType::Bomb:      name = QString::fromUtf8("\u70B8\u5F39"); break;
-            case EffectType::Trap:      name = QString::fromUtf8("\u9677\u9631"); break;
-            case EffectType::Poison:    name = QString::fromUtf8("\u4E2D\u6BD2"); break;
-            default: break;
+        for (const auto& ae : ball->effects()) {
+            if (ae.type != EffectType::None && !seenEffects.contains(ae.type)) {
+                seenEffects.insert(ae.type);
+                QString name;
+                switch (ae.type) {
+                case EffectType::Speed:     name = QStringLiteral("加速"); break;
+                case EffectType::Shield:    name = QStringLiteral("护盾"); break;
+                case EffectType::Grow:      name = QStringLiteral("巨大"); break;
+                case EffectType::Invisible: name = QStringLiteral("隐身"); break;
+                case EffectType::Magnet:    name = QStringLiteral("磁力"); break;
+                case EffectType::Bomb:      name = QStringLiteral("炸弹"); break;
+                case EffectType::Trap:      name = QStringLiteral("陷阱"); break;
+                case EffectType::Poison:    name = QStringLiteral("中毒"); break;
+                default: break;
+                }
+                effectParts.append(name + QString("(%1s)").arg(ae.timer, 0, 'f', 1));
             }
-            effectParts.append(name + QString("(%1s)").arg(ball->effectTimer, 0, 'f', 1));
         }
     }
 
-    // 4. 失败判定：玩家无存活球体或总半径 ≤ 0
-    if (m_gameScene->playerBalls.isEmpty() || totalRadius <= 0) {
+    if (m_gameScene->playerBalls.isEmpty() || totalMass <= 0) {
         gameOver();
         return;
     }
 
-    // 5. 胜利判定：总半径 ≥ 2000
-    if (totalRadius >= GameConstants::Gameplay::VICTORY_TOTAL_RADIUS) {
+    qreal equivalentRadius = std::sqrt(totalMass / M_PI);
+    if (equivalentRadius >= GameConstants::Gameplay::VICTORY_TOTAL_RADIUS) {
         victory();
         return;
     }
 
-    // 6. 更新动态摄像机
     updateCamera();
 
-    QString effects = effectParts.isEmpty() ? QString::fromUtf8("\u65E0") : effectParts.join(QString::fromUtf8(", "));
-    qreal avgRadius = (activeCount > 0) ? totalRadius / activeCount : 0;
+    QString effects = effectParts.isEmpty() ? QStringLiteral("无") : effectParts.join(QStringLiteral(", "));
 
     updateHUD(
         m_gameScene->score,
         m_gameScene->survivalTime,
-        avgRadius,
+        totalMass,
         m_gameScene->aiBalls.size(),
         effects,
         canSplit
@@ -382,7 +382,7 @@ void GameView::createMenuItems()
     m_gameScene->addItem(m_menuBackground);
 
     QFont titleFont("Arial", 48, QFont::Bold);
-    m_menuTitle = new QGraphicsTextItem(QString::fromUtf8("\u7403\u7403\u5927\u4E71\u6597"));
+    m_menuTitle = new QGraphicsTextItem(QStringLiteral("球球大乱斗"));
     m_menuTitle->setFont(titleFont);
     m_menuTitle->setDefaultTextColor(Qt::white);
     m_menuTitle->setZValue(201);
@@ -392,12 +392,12 @@ void GameView::createMenuItems()
     m_menuTitle->setPos((w - titleRect.width()) / 2.0, h * 0.2);
 
     QFont hintFont("Arial", 14);
-    QString hintText = QString::fromUtf8(
-        "WASD - \u79FB\u52A8\n"
-        "\u7A7A\u683C - \u5206\u88C2\n"
-        "E - \u5410\u5B62\n"
-        "ESC - \u6682\u505C\n\n"
-        "\u6309 Enter \u5F00\u59CB");
+    QString hintText = QStringLiteral(
+        "WASD - 移动\n"
+        "空格 - 分裂\n"
+        "E - 吐孢\n"
+        "ESC - 暂停\n\n"
+        "按 Enter 开始");
     m_menuHint = new QGraphicsTextItem(hintText);
     m_menuHint->setFont(hintFont);
     m_menuHint->setDefaultTextColor(QColor(200, 200, 200));
@@ -432,14 +432,14 @@ void GameView::showPause()
         m_gameScene->addItem(m_pauseOverlay);
 
         QFont pauseFont("Arial", 36, QFont::Bold);
-        auto* pauseLabel = new QGraphicsTextItem(QString::fromUtf8("\u5DF2\u6682\u505C"), m_pauseOverlay);
+        auto* pauseLabel = new QGraphicsTextItem(QStringLiteral("已暂停"), m_pauseOverlay);
         pauseLabel->setFont(pauseFont);
         pauseLabel->setDefaultTextColor(Qt::white);
         QRectF rect = pauseLabel->boundingRect();
         pauseLabel->setPos((w - rect.width()) / 2.0, h * 0.35);
 
         QFont smallFont("Arial", 14);
-        auto* pauseHint = new QGraphicsTextItem(QString::fromUtf8("ESC \u7EE7\u7EED / M \u56DE\u83DC\u5355"), m_pauseOverlay);
+        auto* pauseHint = new QGraphicsTextItem(QStringLiteral("ESC 继续 / M 回菜单"), m_pauseOverlay);
         pauseHint->setFont(smallFont);
         pauseHint->setDefaultTextColor(QColor(200, 200, 200));
         QRectF hintRect = pauseHint->boundingRect();
@@ -485,7 +485,7 @@ void GameView::showResultOverlay(QGraphicsRectItem*& overlay, QGraphicsTextItem*
     QFont infoFont("Arial", 18);
     int minutes = survivalTime / 60;
     int seconds = survivalTime % 60;
-    QString infoText = QString::fromUtf8("\u6700\u7EC8\u5206\u6570: %1\n\u751F\u5B58\u65F6\u95F4: %2:%3")
+    QString infoText = QStringLiteral("最终分数: %1\n生存时间: %2:%3")
         .arg(score).arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
     auto* info = new QGraphicsTextItem(infoText, overlay);
     info->setFont(infoFont);
@@ -494,7 +494,7 @@ void GameView::showResultOverlay(QGraphicsRectItem*& overlay, QGraphicsTextItem*
     info->setPos((w - ir.width()) / 2.0, h * 0.4);
 
     QFont hintFont("Arial", 14);
-    auto* hint = new QGraphicsTextItem(QString::fromUtf8("Enter \u91CD\u65B0\u5F00\u59CB / M \u56DE\u83DC\u5355"), overlay);
+    auto* hint = new QGraphicsTextItem(QStringLiteral("Enter 重新开始 / M 回菜单"), overlay);
     hint->setFont(hintFont);
     hint->setDefaultTextColor(QColor(200, 200, 200));
     QRectF hr = hint->boundingRect();
@@ -504,25 +504,25 @@ void GameView::showResultOverlay(QGraphicsRectItem*& overlay, QGraphicsTextItem*
 void GameView::showGameOver(int score, int survivalTime)
 {
     showResultOverlay(m_gameOverOverlay, m_gameOverText,
-                      QString::fromUtf8("\u6E38\u620F\u7ED3\u675F"), QColor(255, 80, 80), score, survivalTime);
+                      QStringLiteral("游戏结束"), QColor(255, 80, 80), score, survivalTime);
 }
 
 void GameView::showVictory(int score, int survivalTime)
 {
     showResultOverlay(m_victoryOverlay, m_victoryText,
-                      QString::fromUtf8("\u80DC\u5229!"), QColor(80, 255, 80), score, survivalTime);
+                      QStringLiteral("胜利!"), QColor(80, 255, 80), score, survivalTime);
 }
 
-void GameView::updateHUD(qreal score, qreal survivalTime, qreal avgRadius,
+void GameView::updateHUD(qreal score, qreal survivalTime, qreal totalMass,
                           int aiCount, const QString& effects, bool canSplit)
 {
     int minutes = static_cast<int>(survivalTime) / 60;
     int seconds = static_cast<int>(survivalTime) % 60;
 
-    m_gameScene->hudScoreText   = QString::fromUtf8("\u5206\u6570: %1").arg(score, 0, 'f', 1);
-    m_gameScene->hudTimeText    = QString::fromUtf8("\u65F6\u95F4: %1:%2").arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
-    m_gameScene->hudRadiusText  = QString::fromUtf8("\u534A\u5F84: %1").arg(avgRadius, 0, 'f', 1);
-    m_gameScene->hudAICountText = QString("AI: %1").arg(aiCount);
-    m_gameScene->hudEffectsText = QString::fromUtf8("\u6548\u679C: ") + effects;
-    m_gameScene->hudSplitText   = canSplit ? QString::fromUtf8("\u5206\u88C2: \u53EF") : QString::fromUtf8("\u5206\u88C2: \u4E0D\u53EF");
+    m_gameScene->hudScoreText   = QStringLiteral("分数: %1").arg(score, 0, 'f', 1);
+    m_gameScene->hudTimeText    = QStringLiteral("时间: %1:%2").arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
+    m_gameScene->hudRadiusText  = QStringLiteral("总质量: %1").arg(totalMass, 0, 'f', 1);
+    m_gameScene->hudAICountText = QStringLiteral("AI: %1").arg(aiCount);
+    m_gameScene->hudEffectsText = QStringLiteral("效果: ") + effects;
+    m_gameScene->hudSplitText   = canSplit ? QStringLiteral("分裂: 可") : QStringLiteral("分裂: 不可");
 }
