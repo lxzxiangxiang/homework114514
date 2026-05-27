@@ -1,7 +1,6 @@
 D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/AgarClone_autogen/EWIEGA46WW/moc_UIManager.cpp: D:/code/project/0.0.1/AgarClone_Qt/UIManager.h \
   D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/AgarClone_autogen/moc_predefs.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QTimer \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q17memory.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20bit.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20functional.h \
@@ -11,7 +10,6 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20utility.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q23type_traits.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q23utility.h \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qabstracteventdispatcher.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qalgorithms.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qalloc.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qanystringview.h \
@@ -22,7 +20,6 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qatomic.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qatomic_cxx11.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbasicatomic.h \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbasictimer.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbindingstorage.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbytearray.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbytearrayalgorithms.h \
@@ -42,10 +39,8 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qcontiguouscache.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdarwinhelpers.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdatastream.h \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdeadlinetimer.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdebug.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qendian.h \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qeventloop.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qexceptionhandling.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qflags.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qfloat16.h \
@@ -118,7 +113,6 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtenvironmentvariables.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtextstream.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtformat_impl.h \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtimer.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtmetamacros.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtnoop.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtpreprocessorsupport.h \

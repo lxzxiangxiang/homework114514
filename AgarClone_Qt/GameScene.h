@@ -6,8 +6,7 @@
 
 class Ball;
 class Food;
-class SkillBall;
-class Hazard;
+class EffectBall;
 class EjectBall;
 
 class GameScene : public QGraphicsScene {
@@ -29,8 +28,7 @@ public:
     QList<Ball*> playerBalls;
     QList<Ball*> aiBalls;
     QList<Food*> foods;
-    QList<SkillBall*> skillBalls;
-    QList<Hazard*> hazards;
+    QList<EffectBall*> effectBalls;
     QList<EjectBall*> ejectBalls;
 
     qreal score = 0;
@@ -39,10 +37,25 @@ public:
     bool wantSplit = false;
     bool wantEject = false;
 
+    QString hudScoreText;
+    QString hudTimeText;
+    QString hudRadiusText;
+    QString hudAICountText;
+    QString hudEffectsText;
+    QString hudSplitText;
+
 private:
-    void checkCollisions();
-    void applyAttraction(qreal dt);
+    void movePlayerBalls(qreal dt);
+    void processSplitEject();
+    QList<Ball*> buildAllBalls() const;
+    void updateAIBalls(QList<Ball*>& allBalls, qreal dt);
+    void updateAllTimers(const QList<Ball*>& allBalls, qreal dt);
+    void updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt);
+    void updateProjectiles(qreal dt);
+    void checkCollisions(const QList<Ball*>& allBalls);
+    void applyAttraction(const QList<Ball*>& allBalls, qreal dt);
     void removeDeadEntities();
+    static bool sameOwner(const Ball* a, const Ball* b);
 
     SpatialGrid m_spatialGrid;
     qreal m_skillSpawnTimer = 0;

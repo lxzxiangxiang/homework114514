@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-90a9f3088d295a4fa542.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "AgarClone",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "AgarClone::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AgarClone-Release-23c1cdfc3ff4c4f69e53.json",
+					"name" : "AgarClone",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "AgarClone_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AgarClone_autogen-Release-edf0222e6117652fe527.json",
+					"name" : "AgarClone_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "AgarClone_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AgarClone_autogen_timestamp_deps-Release-3c23af0239a89b4d6900.json",
+					"name" : "AgarClone_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Release",
+		"source" : "D:/code/project/0.0.1/AgarClone_Qt"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

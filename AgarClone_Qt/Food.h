@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Entity.h"
+#include "ResBall.h"
 
-class Food : public Entity {
+class Food : public ResBall {
 public:
     Food(qreal radius = -1);
-
-    EntityType entityType() const override { return EntityType::Food; }
 
     void update(qreal dt) override;
     void onEaten(Entity* eater) override;

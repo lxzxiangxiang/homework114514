@@ -5,8 +5,7 @@
 #include <QRandomGenerator>
 
 Food::Food(qreal radius)
-    : Entity(radius < 0 ? QRandomGenerator::global()->bounded(3, 9) : radius,
-             // RGB 各通道独立随机 0~255
+    : ResBall([&]() { qreal r = radius < 0 ? QRandomGenerator::global()->bounded(3, 9) : radius; return M_PI * r * r; }(),
              QColor(QRandomGenerator::global()->bounded(256),
                     QRandomGenerator::global()->bounded(256),
                     QRandomGenerator::global()->bounded(256)))
@@ -33,11 +32,11 @@ void Food::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     Q_UNUSED(widget);
     painter->setBrush(m_color);
     painter->setPen(Qt::NoPen);
-    painter->drawEllipse(QPointF(0, 0), m_radius, m_radius);
+    painter->drawEllipse(QPointF(0, 0), radius(), radius());
 }
 
 // 返回以中心为原点的边界矩形
 QRectF Food::boundingRect() const
 {
-    return QRectF(-m_radius, -m_radius, m_radius * 2, m_radius * 2);
+    return QRectF(-radius(), -radius(), radius() * 2, radius() * 2);
 }

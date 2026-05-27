@@ -401,8 +401,7 @@ CMakeFiles/AgarClone.dir/AIController.cpp.obj: D:/code/project/0.0.1/AgarClone_Q
   D:/code/project/0.0.1/AgarClone_Qt/AIController.h \
   D:/code/project/0.0.1/AgarClone_Qt/Ball.h \
   D:/code/project/0.0.1/AgarClone_Qt/Constants.h \
-  D:/code/project/0.0.1/AgarClone_Qt/Entity.h \
-  D:/code/project/0.0.1/AgarClone_Qt/Food.h
+  D:/code/project/0.0.1/AgarClone_Qt/Entity.h
 
 CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.obj: AgarClone_autogen/mocs_compilation.cpp \
   D:/anzhuangweizhi/msys2/ucrt64/include/_mingw.h \
@@ -637,7 +636,6 @@ CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.obj: AgarClone_a
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRect \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSize \
@@ -913,6 +911,8 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ball.c
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/postypes.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/predefined_ops.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/ptr_traits.h \
+  D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/random.h \
+  D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/random.tcc \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/range_access.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/refwrap.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/requires_hosted.h \
@@ -1000,6 +1000,7 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ball.c
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/pstl/glue_memory_defs.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/pstl/glue_numeric_defs.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/pstl/pstl_config.h \
+  D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/random \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/ratio \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/set \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/stdexcept \
@@ -1037,6 +1038,7 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ball.c
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/error_constants.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/gthr-default.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/gthr.h \
+  D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/opt_random.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/os_defines.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/corecrt.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/corecrt_startup.h \
@@ -1077,14 +1079,20 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ball.c
   D:/anzhuangweizhi/msys2/ucrt64/include/time.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/vadefs.h \
   D:/anzhuangweizhi/msys2/ucrt64/include/wchar.h \
+  D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/emmintrin.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/limits.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h \
+  D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mmintrin.h \
+  D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mwaitintrin.h \
+  D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/pmmintrin.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stdarg.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stdbool.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stddef.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stdint.h \
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/syslimits.h \
+  D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xmmintrin.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRandomGenerator \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q17memory.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20bit.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20functional.h \
@@ -1160,6 +1168,7 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ball.c
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qpair.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qpoint.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qprocessordetection.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrandom.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrect.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrefcount.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qscopedpointer.h \
@@ -2315,7 +2324,6 @@ CMakeFiles/AgarClone.dir/GameScene.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/G
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xmmintrin.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRandomGenerator \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
@@ -2722,7 +2730,6 @@ CMakeFiles/AgarClone.dir/GameView.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ga
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRect \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
@@ -2937,6 +2944,7 @@ CMakeFiles/AgarClone.dir/GameView.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Ga
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qwidget.h \
+  D:/code/project/0.0.1/AgarClone_Qt/AIController.h \
   D:/code/project/0.0.1/AgarClone_Qt/Ball.h \
   D:/code/project/0.0.1/AgarClone_Qt/Constants.h \
   D:/code/project/0.0.1/AgarClone_Qt/Entity.h \
@@ -3319,7 +3327,6 @@ CMakeFiles/AgarClone.dir/Hazard.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Haza
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QBrush \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainter \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainterPath \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qcolor.h \
@@ -3994,7 +4001,6 @@ CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/syslimits.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QtMath \
@@ -4524,12 +4530,22 @@ CMakeFiles/AgarClone.dir/UIManager.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/U
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QFont \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qaction.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbitmap.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qcolor.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qcursor.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfont.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontinfo.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontvariableaxis.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qicon.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qimage.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qkeysequence.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpaintdevice.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpalette.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixmap.h \
@@ -4537,6 +4553,7 @@ CMakeFiles/AgarClone.dir/UIManager.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/U
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qregion.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qrgb.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qrgba64.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtextoption.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtgui-config.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtguiexports.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtguiglobal.h \
@@ -4546,11 +4563,18 @@ CMakeFiles/AgarClone.dir/UIManager.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/U
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsScene \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsView \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qframe.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsscene.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsview.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qscrollarea.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qsizepolicy.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtwidgets-config.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qwidget.h \
   D:/code/project/0.0.1/AgarClone_Qt/Constants.h \
   D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
 
@@ -5585,8 +5609,6 @@ D:/anzhuangweizhi/msys2/ucrt64/include/corecrt_wstdlib.h:
 
 D:/anzhuangweizhi/msys2/ucrt64/include/crtdefs.h:
 
-D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainterPath:
-
 D:/anzhuangweizhi/msys2/ucrt64/include/ctype.h:
 
 D:/code/project/0.0.1/AgarClone_Qt/UIManager.h:
@@ -5828,8 +5850,6 @@ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qsystemdetection.h:
 D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtconfigmacros.h:
 
 D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtcore-config.h:
-
-D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair:
 
 D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtcoreexports.h:
 

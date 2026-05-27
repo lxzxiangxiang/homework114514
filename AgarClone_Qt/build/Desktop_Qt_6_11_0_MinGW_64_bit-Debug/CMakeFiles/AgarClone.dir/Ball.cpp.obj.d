@@ -374,13 +374,13 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qimage.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QBrush \
  D:\code\project\0.0.1\AgarClone_Qt\Constants.h \
  D:\code\project\0.0.1\AgarClone_Qt\EjectBall.h \
+ D:\code\project\0.0.1\AgarClone_Qt\ResBall.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainter \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtextoption.h \
@@ -388,4 +388,38 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfont.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qendian.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontvariableaxis.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QStyleOptionGraphicsItem \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qstyleoption.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qlocale.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qabstractspinbox.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qwidget.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qaction.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qkeysequence.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qicon.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpalette.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qsizepolicy.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qcursor.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbitmap.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qvalidator.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qregularexpression.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qslider.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qabstractslider.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qstyle.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtabbar.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qtabwidget.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qrubberband.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qframe.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qabstractitemmodel.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRandomGenerator \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrandom.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/random \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/random.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32/bits/opt_random.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/pmmintrin.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/emmintrin.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/xmmintrin.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/mmintrin.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/mwaitintrin.h \
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/random.tcc \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QtMath

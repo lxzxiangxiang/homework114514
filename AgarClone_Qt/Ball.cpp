@@ -1,245 +1,228 @@
-// 球体(Ball)实体实现 — 游戏中最核心的实体，玩家和 AI 共用此类
-// 支持移动(速度与半径反比)、分裂、吐孢、吞食，以及技能/负面效果系统
 #include "Ball.h"
 #include "EjectBall.h"
 #include <QPainter>
-#include <cmath>
+#include <QStyleOptionGraphicsItem>
+#include <QRandomGenerator>
+#include <QtMath>
 
-Ball::Ball(qreal radius, QColor color, bool isPlayer, int aiLevel)
-    : Entity(radius, color)
+Ball::Ball(qreal mass, QColor color, bool isPlayer, int aiLevel)
+    : Entity(mass, color)
     , isPlayer(isPlayer)
     , aiLevel(aiLevel)
     , aiId(0)
 {
-    setAcceptHoverEvents(true);
 }
 
-// 移动球体：速度与半径成反比，位置 clamp 到地图边界
-// 速度公式: speed = BASE_SPEED × sqrt(MIN_RADIUS / radius)
+qreal Ball::speed() const
+{
+    qreal r = radius();
+    qreal safeR = qMax(r, GameConstants::World::MIN_RADIUS);
+    qreal base = GameConstants::Ball::BASE_SPEED * std::sqrt(GameConstants::World::MIN_RADIUS / safeR);
+    if (effect == EffectType::Speed && effectTimer > 0)
+        base *= GameConstants::Ball::SPEED_MULTIPLIER;
+    if (effect == EffectType::Trap && effectTimer > 0)
+        base *= GameConstants::Ball::TRAP_SPEED_MULTIPLIER;
+    return base;
+}
+
+static QPointF splitDir(QPointF input, qreal lastDx, qreal lastDy)
+{
+    QPointF dir = input;
+    if (std::abs(dir.x()) < 1e-6 && std::abs(dir.y()) < 1e-6) dir = QPointF(lastDx, lastDy);
+    if (std::abs(dir.x()) < 1e-6 && std::abs(dir.y()) < 1e-6) dir = QPointF(1, 0);
+    qreal len = std::sqrt(dir.x() * dir.x() + dir.y() * dir.y());
+    qreal angle = std::atan2(dir.y(), dir.x())
+        + (QRandomGenerator::global()->generateDouble() * 2.0 - 1.0) * GameConstants::Ball::SPLIT_RANDOM_ANGLE;
+    return QPointF(std::cos(angle), std::sin(angle));
+}
+
 void Ball::move(qreal dx, qreal dy, qreal dt)
 {
-    qreal speed = GameConstants::BASE_SPEED * std::sqrt(GameConstants::MIN_RADIUS / m_radius);
-    if (debuff == DebuffType::Trap && debuffTimer > 0) {
-        speed *= GameConstants::HazardEffect::TRAP_SPEED_MULTIPLIER;
+    if (dx != 0 || dy != 0) {
+        qreal len = std::sqrt(dx * dx + dy * dy);
+        if (len > 0) { dx /= len; dy /= len; }
+        lastDx = dx; lastDy = dy;
     }
-    vx = dx * speed;
-    vy = dy * speed;
-    lastDx = dx;
-    lastDy = dy;
 
-    setPos(pos() + QPointF(vx * dt, vy * dt));
-
-    // 边界限制，防止球体移出地图
-    qreal x = pos().x();
-    qreal y = pos().y();
-    if (x < 0) x = 0;
-    if (x > GameConstants::MAP_WIDTH) x = GameConstants::MAP_WIDTH;
-    if (y < 0) y = 0;
-    if (y > GameConstants::MAP_HEIGHT) y = GameConstants::MAP_HEIGHT;
-    setPos(x, y);
+    qreal s = speed();
+    qreal nx = pos().x() + dx * s * dt;
+    qreal ny = pos().y() + dy * s * dt;
+    qreal r = radius();
+    nx = qBound(r, nx, static_cast<qreal>(GameConstants::World::MAP_WIDTH) - r);
+    ny = qBound(r, ny, static_cast<qreal>(GameConstants::World::MAP_HEIGHT) - r);
+    setPos(nx, ny);
 }
 
-// 分裂：半径 ≥ 18 时，朝移动方向分裂为两个球体
-// 新球半径 = 原半径 / √2，自身半径同步缩小，返回新球指针供 GameScene 注册
 Ball* Ball::split(QPointF direction)
 {
-    if (m_radius < GameConstants::SPLIT_THRESHOLD || splitTimer > 0)
-        return nullptr;
+    if (radius() < GameConstants::Ball::SPLIT_THRESHOLD) return nullptr;
 
-    qreal newRadius = m_radius / std::sqrt(2.0);
-    setRadius(newRadius);
+    qreal newMass = m_mass * GameConstants::Ball::SPLIT_MASS_RETAIN;
+    m_mass = newMass;
+    qreal r = radius();
+    qreal oldR = std::sqrt((m_mass + newMass) / M_PI);
+    setMass(m_mass);
 
-    auto* newBall = new Ball(newRadius, m_color, isPlayer, aiLevel);
-    newBall->aiId = aiId;
-    newBall->splitTimer = 1.5f;
-    newBall->mergeTimer = 1.5f;
-    newBall->invincibleTimer = 3.0f;
+    auto* nb = new Ball(newMass, m_color, isPlayer, aiLevel);
+    nb->aiId = aiId;
+    nb->effect = effect;
+    nb->effectTimer = effectTimer;
+    nb->growOriginalMass = growOriginalMass;
 
-    QPointF offset = direction * (newRadius + newRadius * 0.1);
-    newBall->setPos(pos() + offset);
-
-    splitTimer = 1.5f;
-    mergeTimer = 1.5f;
-
-    return newBall;
+    QPointF dir = splitDir(direction, lastDx, lastDy);
+    qreal jitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.4;
+    qreal offset = (nb->radius() * 2.0 + 30.0) * jitter;
+    nb->setPos(pos() + dir * offset);
+    return nb;
 }
 
-// 吐孢：半径 ≥ 25 时，吐出一个孢子（半径 8），自身半径减少 3
 EjectBall* Ball::eject()
 {
-    if (m_radius < GameConstants::EJECT_THRESHOLD)
-        return nullptr;
+    if (radius() < GameConstants::Ball::EJECT_THRESHOLD) return nullptr;
 
-    setRadius(m_radius - 3);
+    qreal ejectR = GameConstants::EntityRadius::EJECTBALL;
+    m_mass -= M_PI * ejectR * ejectR;
+    if (m_mass < M_PI * GameConstants::World::MIN_RADIUS * GameConstants::World::MIN_RADIUS)
+        m_mass = M_PI * GameConstants::World::MIN_RADIUS * GameConstants::World::MIN_RADIUS;
 
-    QPointF dir(lastDx, lastDy);
-    if (std::abs(lastDx) < 1e-6 && std::abs(lastDy) < 1e-6) {
-        dir = QPointF(1, 0);
-    }
-    return new EjectBall(pos(), m_color, dir.x(), dir.y());
+    QPointF dir = splitDir(QPointF(lastDx, lastDy), lastDx, lastDy);
+    qreal spJitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.3;
+    return new EjectBall(pos(), m_color, dir.x() * spJitter, dir.y() * spJitter);
 }
 
-// 吞食目标实体：质量合并，新半径 = √(自身半径² + 目标半径²)
 void Ball::eat(Entity* target)
 {
-    qreal newRadius = std::sqrt(m_radius * m_radius + target->radius() * target->radius());
-    setRadius(newRadius);
+    m_mass += target->mass();
     target->onEaten(this);
 }
 
-// 应用技能效果：设置技能类型和对应持续时间的计时器
-void Ball::applySkill(SkillType skillType)
+void Ball::applyEffect(EffectType et)
 {
-    skill = skillType;
-    switch (skillType) {
-    case SkillType::Speed:
-        skillTimer = GameConstants::SkillDuration::SPEED;
+    switch (et) {
+    case EffectType::Speed:
+        effectTimer = GameConstants::EffectDuration::SPEED;
         break;
-    case SkillType::Shield:
-        skillTimer = GameConstants::SkillDuration::SHIELD;
+    case EffectType::Shield:
+        effectTimer = GameConstants::EffectDuration::SHIELD;
         break;
-    case SkillType::Grow:
-        skillTimer = GameConstants::SkillDuration::GROW;
+    case EffectType::Grow:
+        effectTimer = GameConstants::EffectDuration::GROW;
+        growOriginalMass = m_mass;
+        m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
         break;
-    case SkillType::Invisible:
-        skillTimer = GameConstants::SkillDuration::INVISIBLE;
+    case EffectType::Invisible:
+        effectTimer = GameConstants::EffectDuration::INVISIBLE;
         break;
-    case SkillType::Magnet:
-        skillTimer = GameConstants::SkillDuration::MAGNET;
+    case EffectType::Magnet:
+        effectTimer = GameConstants::EffectDuration::MAGNET;
         break;
-    default:
-        skillTimer = 0;
+    case EffectType::Bomb:
+        m_mass *= GameConstants::Ball::Bomb::RADIUS_RATIO * GameConstants::Ball::Bomb::RADIUS_RATIO;
+        return;
+    case EffectType::Trap:
+        effectTimer = GameConstants::EffectDuration::TRAP;
         break;
+    case EffectType::Poison:
+        effectTimer = GameConstants::EffectDuration::POISON;
+        break;
+    default: return;
     }
+    effect = et;
 }
 
-// 应用负面效果：Bomb 瞬间减半径，Trap 减速，Poison 持续掉血
-void Ball::applyDebuff(DebuffType debuffType)
-{
-    debuff = debuffType;
-    switch (debuffType) {
-    case DebuffType::Bomb:
-        setRadius(m_radius * GameConstants::HazardEffect::BOMB_RADIUS_RATIO);
-        debuffTimer = 0;
-        break;
-    case DebuffType::Trap:
-        debuffTimer = GameConstants::HazardEffect::TRAP_DURATION;
-        break;
-    case DebuffType::Poison:
-        debuffTimer = GameConstants::HazardEffect::POISON_DURATION;
-        break;
-    default:
-        debuffTimer = 0;
-        break;
-    }
-}
-
-// 无敌判定：新生成球体前 3 秒无敌
-bool Ball::isInvincible() const
-{
-    return invincibleTimer > 0;
-}
-
-// 护盾判定：技能为 Shield 且计时器未耗尽
 bool Ball::hasShield() const
 {
-    return skill == SkillType::Shield && skillTimer > 0;
+    return effect == EffectType::Shield && effectTimer > 0;
 }
 
-// 每帧递减所有计时器：分裂、合并、无敌、技能、减益
-// 速度自然衰减（摩擦效果）
 void Ball::update(qreal dt)
 {
-    if (splitTimer > 0) splitTimer -= dt;
-    if (mergeTimer > 0) mergeTimer -= dt;
-    if (invincibleTimer > 0) invincibleTimer -= dt;
-
-    // 技能计时器递减，到期清除技能
-    if (skillTimer > 0) {
-        skillTimer -= dt;
-        if (skillTimer <= 0) skill = SkillType::None;
-    }
-
-    // 减益计时器递减，到期清除减益
-    if (debuffTimer > 0) {
-        debuffTimer -= dt;
-        if (debuff == DebuffType::Poison) {
-            setRadius(m_radius - GameConstants::HazardEffect::POISON_RADIUS_PER_SEC * dt);
+    if (effectTimer > 0) {
+        effectTimer -= dt;
+        if (effectTimer <= 0) {
+            if (effect == EffectType::Grow && growOriginalMass > 0) {
+                qreal growFactor = GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
+                qreal expectedMass = growOriginalMass * growFactor;
+                if (m_mass > expectedMass) m_mass /= growFactor;
+                else m_mass = growOriginalMass;
+                growOriginalMass = 0;
+            }
+            effect = EffectType::None;
+        } else if (effect == EffectType::Poison) {
+            qreal r = radius();
+            qreal newR = qMax(r - GameConstants::Ball::Poison::RADIUS_PER_SEC * dt, 1.0);
+            m_mass = M_PI * newR * newR;
         }
-        if (debuffTimer <= 0) debuff = DebuffType::None;
     }
-
-    // 速度摩擦衰减
-    vx *= 0.95f;
-    vy *= 0.95f;
 }
 
-// 被吞食时标记死亡
 void Ball::onEaten(Entity* eater)
 {
     Q_UNUSED(eater);
-    m_alive = false;
+    setAlive(false);
 }
 
-// 绘制球体及各种状态特效
 void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
+    Q_UNUSED(option); Q_UNUSED(widget);
+    if (!isAlive()) return;
+    painter->setRenderHint(QPainter::Antialiasing);
 
-    painter->setPen(Qt::NoPen);
-
-    // 护盾效果：蓝色半透明外圈（+4px）
-    if (hasShield()) {
-        QColor shieldColor(100, 150, 255, 150);
-        painter->setBrush(shieldColor);
-        painter->drawEllipse(QPointF(0, 0), m_radius + 4, m_radius + 4);
-    }
-
+    qreal r = radius();
     QColor drawColor = m_color;
-    qreal alpha = 1.0;
 
-    // 无敌闪烁效果：alpha 在 0.4 和 1.0 之间交替
-    if (isInvincible()) {
-        int flash = static_cast<int>(invincibleTimer * 10) % 2;
-        alpha = flash ? 0.4 : 1.0;
+    // Invincible flash
+    if (effect == EffectType::Shield && effectTimer > 0) {
+        qreal flash = std::abs(std::sin(effectTimer * 10.0));
+        drawColor = QColor(
+            qMin(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
+            qMin(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
+            qMin(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
+        // Shield glow
+        qreal glowR = r * 1.3;
+        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(effectTimer * 5.0)));
+        painter->setPen(Qt::NoPen);
+        painter->drawEllipse(QPointF(0, 0), glowR, glowR);
     }
 
-    // 隐身效果：半透明
-    if (skill == SkillType::Invisible && skillTimer > 0) {
-        alpha = 0.3;
-    }
-
-    // 加速效果：颜色高亮 130%
-    if (skill == SkillType::Speed && skillTimer > 0) {
-        drawColor = drawColor.lighter(130);
-    }
-
-    // 磁力效果：颜色高亮 150%
-    if (skill == SkillType::Magnet && skillTimer > 0) {
-        drawColor = drawColor.lighter(150);
-    }
-
-    // 中毒效果：绿色调
-    if (debuff == DebuffType::Poison && debuffTimer > 0) {
-        drawColor = QColor(100, 200, 50);
-    }
-
-    // 陷阱效果：棕色半透明边框（+2px）
-    if (debuff == DebuffType::Trap && debuffTimer > 0) {
-        painter->setBrush(QColor(139, 69, 19, 120));
-        painter->drawEllipse(QPointF(0, 0), m_radius + 2, m_radius + 2);
-    }
-
-    drawColor.setAlphaF(alpha);
     painter->setBrush(drawColor);
-    painter->drawEllipse(QPointF(0, 0), m_radius, m_radius);
+    painter->setPen(Qt::NoPen);
+    painter->drawEllipse(QPointF(0, 0), r, r);
+
+    // Invisible
+    if (effect == EffectType::Invisible && effectTimer > 0) {
+        painter->setOpacity(0.3);
+    }
+
+    // Eye
+    painter->setBrush(Qt::white);
+    painter->drawEllipse(QPointF(0, 0), r * 0.3, r * 0.3);
+
+    // Player outline + cross
+    if (isPlayer) {
+        painter->setPen(QPen(QColor(100, 255, 100), 3));
+        painter->setBrush(Qt::NoBrush);
+        painter->drawEllipse(QPointF(0, 0), r * 1.15, r * 1.15);
+        painter->setPen(QPen(Qt::white, 2));
+        qreal cs = r * 0.4;
+        painter->drawLine(QPointF(-cs, 0), QPointF(cs, 0));
+        painter->drawLine(QPointF(0, -cs), QPointF(0, cs));
+    } else {
+        painter->setPen(QPen(Qt::red, 2));
+        painter->setBrush(Qt::NoBrush);
+        painter->drawEllipse(QPointF(0, 0), r * 1.1, r * 1.1);
+        if (aiLevel >= 2) {
+            qreal ts = r * 0.3;
+            QPointF tri[] = { QPointF(0, -ts), QPointF(-ts*0.8, ts*0.5), QPointF(ts*0.8, ts*0.5) };
+            painter->setBrush(Qt::red);
+            painter->setPen(Qt::NoPen);
+            painter->drawPolygon(tri, 3);
+        }
+    }
 }
 
-// 边界矩形：护盾时额外 +4 像素以容纳外圈
 QRectF Ball::boundingRect() const
 {
-    qreal extra = hasShield() ? 4 : 0;
-    qreal r = m_radius + extra;
+    qreal r = radius() * 1.5;
     return QRectF(-r, -r, r * 2, r * 2);
 }

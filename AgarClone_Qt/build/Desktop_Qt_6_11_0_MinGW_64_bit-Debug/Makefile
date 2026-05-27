@@ -271,6 +271,30 @@ Ball.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/Ball.cpp.s
 .PHONY : Ball.cpp.s
 
+EffectBall.obj: EffectBall.cpp.obj
+.PHONY : EffectBall.obj
+
+# target to build an object file
+EffectBall.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/EffectBall.cpp.obj
+.PHONY : EffectBall.cpp.obj
+
+EffectBall.i: EffectBall.cpp.i
+.PHONY : EffectBall.i
+
+# target to preprocess a source file
+EffectBall.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/EffectBall.cpp.i
+.PHONY : EffectBall.cpp.i
+
+EffectBall.s: EffectBall.cpp.s
+.PHONY : EffectBall.s
+
+# target to generate assembly for a file
+EffectBall.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/EffectBall.cpp.s
+.PHONY : EffectBall.cpp.s
+
 EjectBall.obj: EjectBall.cpp.obj
 .PHONY : EjectBall.obj
 
@@ -367,54 +391,6 @@ GameView.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/GameView.cpp.s
 .PHONY : GameView.cpp.s
 
-Hazard.obj: Hazard.cpp.obj
-.PHONY : Hazard.obj
-
-# target to build an object file
-Hazard.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/Hazard.cpp.obj
-.PHONY : Hazard.cpp.obj
-
-Hazard.i: Hazard.cpp.i
-.PHONY : Hazard.i
-
-# target to preprocess a source file
-Hazard.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/Hazard.cpp.i
-.PHONY : Hazard.cpp.i
-
-Hazard.s: Hazard.cpp.s
-.PHONY : Hazard.s
-
-# target to generate assembly for a file
-Hazard.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/Hazard.cpp.s
-.PHONY : Hazard.cpp.s
-
-SkillBall.obj: SkillBall.cpp.obj
-.PHONY : SkillBall.obj
-
-# target to build an object file
-SkillBall.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/SkillBall.cpp.obj
-.PHONY : SkillBall.cpp.obj
-
-SkillBall.i: SkillBall.cpp.i
-.PHONY : SkillBall.i
-
-# target to preprocess a source file
-SkillBall.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/SkillBall.cpp.i
-.PHONY : SkillBall.cpp.i
-
-SkillBall.s: SkillBall.cpp.s
-.PHONY : SkillBall.s
-
-# target to generate assembly for a file
-SkillBall.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/SkillBall.cpp.s
-.PHONY : SkillBall.cpp.s
-
 SpatialGrid.obj: SpatialGrid.cpp.obj
 .PHONY : SpatialGrid.obj
 
@@ -438,30 +414,6 @@ SpatialGrid.s: SpatialGrid.cpp.s
 SpatialGrid.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/SpatialGrid.cpp.s
 .PHONY : SpatialGrid.cpp.s
-
-UIManager.obj: UIManager.cpp.obj
-.PHONY : UIManager.obj
-
-# target to build an object file
-UIManager.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/UIManager.cpp.obj
-.PHONY : UIManager.cpp.obj
-
-UIManager.i: UIManager.cpp.i
-.PHONY : UIManager.i
-
-# target to preprocess a source file
-UIManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/UIManager.cpp.i
-.PHONY : UIManager.cpp.i
-
-UIManager.s: UIManager.cpp.s
-.PHONY : UIManager.s
-
-# target to generate assembly for a file
-UIManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\AgarClone.dir\build.make CMakeFiles/AgarClone.dir/UIManager.cpp.s
-.PHONY : UIManager.cpp.s
 
 main.obj: main.cpp.obj
 .PHONY : main.obj
@@ -511,6 +463,9 @@ help:
 	@echo ... Ball.obj
 	@echo ... Ball.i
 	@echo ... Ball.s
+	@echo ... EffectBall.obj
+	@echo ... EffectBall.i
+	@echo ... EffectBall.s
 	@echo ... EjectBall.obj
 	@echo ... EjectBall.i
 	@echo ... EjectBall.s
@@ -523,18 +478,9 @@ help:
 	@echo ... GameView.obj
 	@echo ... GameView.i
 	@echo ... GameView.s
-	@echo ... Hazard.obj
-	@echo ... Hazard.i
-	@echo ... Hazard.s
-	@echo ... SkillBall.obj
-	@echo ... SkillBall.i
-	@echo ... SkillBall.s
 	@echo ... SpatialGrid.obj
 	@echo ... SpatialGrid.i
 	@echo ... SpatialGrid.s
-	@echo ... UIManager.obj
-	@echo ... UIManager.i
-	@echo ... UIManager.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

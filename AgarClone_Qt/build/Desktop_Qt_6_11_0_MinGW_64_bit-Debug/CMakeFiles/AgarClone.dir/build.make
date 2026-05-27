@@ -128,41 +128,26 @@ CMakeFiles/AgarClone.dir/Food.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/Food.cpp.s"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\Food.cpp -o CMakeFiles\AgarClone.dir\Food.cpp.s
 
-CMakeFiles/AgarClone.dir/SkillBall.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
-CMakeFiles/AgarClone.dir/SkillBall.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
-CMakeFiles/AgarClone.dir/SkillBall.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/SkillBall.cpp
-CMakeFiles/AgarClone.dir/SkillBall.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/AgarClone.dir/SkillBall.cpp.obj"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/SkillBall.cpp.obj -MF CMakeFiles\AgarClone.dir\SkillBall.cpp.obj.d -o CMakeFiles\AgarClone.dir\SkillBall.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\SkillBall.cpp
+CMakeFiles/AgarClone.dir/EffectBall.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
+CMakeFiles/AgarClone.dir/EffectBall.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
+CMakeFiles/AgarClone.dir/EffectBall.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/EffectBall.cpp
+CMakeFiles/AgarClone.dir/EffectBall.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/AgarClone.dir/EffectBall.cpp.obj"
+	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/EffectBall.cpp.obj -MF CMakeFiles\AgarClone.dir\EffectBall.cpp.obj.d -o CMakeFiles\AgarClone.dir\EffectBall.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\EffectBall.cpp
 
-CMakeFiles/AgarClone.dir/SkillBall.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/AgarClone.dir/SkillBall.cpp.i"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\code\project\0.0.1\AgarClone_Qt\SkillBall.cpp > CMakeFiles\AgarClone.dir\SkillBall.cpp.i
+CMakeFiles/AgarClone.dir/EffectBall.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/AgarClone.dir/EffectBall.cpp.i"
+	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\code\project\0.0.1\AgarClone_Qt\EffectBall.cpp > CMakeFiles\AgarClone.dir\EffectBall.cpp.i
 
-CMakeFiles/AgarClone.dir/SkillBall.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/SkillBall.cpp.s"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\SkillBall.cpp -o CMakeFiles\AgarClone.dir\SkillBall.cpp.s
-
-CMakeFiles/AgarClone.dir/Hazard.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
-CMakeFiles/AgarClone.dir/Hazard.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
-CMakeFiles/AgarClone.dir/Hazard.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/Hazard.cpp
-CMakeFiles/AgarClone.dir/Hazard.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/AgarClone.dir/Hazard.cpp.obj"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/Hazard.cpp.obj -MF CMakeFiles\AgarClone.dir\Hazard.cpp.obj.d -o CMakeFiles\AgarClone.dir\Hazard.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\Hazard.cpp
-
-CMakeFiles/AgarClone.dir/Hazard.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/AgarClone.dir/Hazard.cpp.i"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\code\project\0.0.1\AgarClone_Qt\Hazard.cpp > CMakeFiles\AgarClone.dir\Hazard.cpp.i
-
-CMakeFiles/AgarClone.dir/Hazard.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/Hazard.cpp.s"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\Hazard.cpp -o CMakeFiles\AgarClone.dir\Hazard.cpp.s
+CMakeFiles/AgarClone.dir/EffectBall.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/EffectBall.cpp.s"
+	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\EffectBall.cpp -o CMakeFiles\AgarClone.dir\EffectBall.cpp.s
 
 CMakeFiles/AgarClone.dir/EjectBall.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
 CMakeFiles/AgarClone.dir/EjectBall.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
 CMakeFiles/AgarClone.dir/EjectBall.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/EjectBall.cpp
 CMakeFiles/AgarClone.dir/EjectBall.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/AgarClone.dir/EjectBall.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/AgarClone.dir/EjectBall.cpp.obj"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/EjectBall.cpp.obj -MF CMakeFiles\AgarClone.dir\EjectBall.cpp.obj.d -o CMakeFiles\AgarClone.dir\EjectBall.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\EjectBall.cpp
 
 CMakeFiles/AgarClone.dir/EjectBall.cpp.i: cmake_force
@@ -177,7 +162,7 @@ CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj: CMakeFiles/AgarClone.dir/flags.mak
 CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
 CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.cpp
 CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj -MF CMakeFiles\AgarClone.dir\SpatialGrid.cpp.obj.d -o CMakeFiles\AgarClone.dir\SpatialGrid.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\SpatialGrid.cpp
 
 CMakeFiles/AgarClone.dir/SpatialGrid.cpp.i: cmake_force
@@ -192,7 +177,7 @@ CMakeFiles/AgarClone.dir/AIController.cpp.obj: CMakeFiles/AgarClone.dir/flags.ma
 CMakeFiles/AgarClone.dir/AIController.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
 CMakeFiles/AgarClone.dir/AIController.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/AIController.cpp
 CMakeFiles/AgarClone.dir/AIController.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/AgarClone.dir/AIController.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/AgarClone.dir/AIController.cpp.obj"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/AIController.cpp.obj -MF CMakeFiles\AgarClone.dir\AIController.cpp.obj.d -o CMakeFiles\AgarClone.dir\AIController.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\AIController.cpp
 
 CMakeFiles/AgarClone.dir/AIController.cpp.i: cmake_force
@@ -207,7 +192,7 @@ CMakeFiles/AgarClone.dir/GameScene.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
 CMakeFiles/AgarClone.dir/GameScene.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
 CMakeFiles/AgarClone.dir/GameScene.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/GameScene.cpp
 CMakeFiles/AgarClone.dir/GameScene.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/AgarClone.dir/GameScene.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/AgarClone.dir/GameScene.cpp.obj"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/GameScene.cpp.obj -MF CMakeFiles\AgarClone.dir\GameScene.cpp.obj.d -o CMakeFiles\AgarClone.dir\GameScene.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\GameScene.cpp
 
 CMakeFiles/AgarClone.dir/GameScene.cpp.i: cmake_force
@@ -222,7 +207,7 @@ CMakeFiles/AgarClone.dir/GameView.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
 CMakeFiles/AgarClone.dir/GameView.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
 CMakeFiles/AgarClone.dir/GameView.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/GameView.cpp
 CMakeFiles/AgarClone.dir/GameView.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/AgarClone.dir/GameView.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/AgarClone.dir/GameView.cpp.obj"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/GameView.cpp.obj -MF CMakeFiles\AgarClone.dir\GameView.cpp.obj.d -o CMakeFiles\AgarClone.dir\GameView.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\GameView.cpp
 
 CMakeFiles/AgarClone.dir/GameView.cpp.i: cmake_force
@@ -233,35 +218,18 @@ CMakeFiles/AgarClone.dir/GameView.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/GameView.cpp.s"
 	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\GameView.cpp -o CMakeFiles\AgarClone.dir\GameView.cpp.s
 
-CMakeFiles/AgarClone.dir/UIManager.cpp.obj: CMakeFiles/AgarClone.dir/flags.make
-CMakeFiles/AgarClone.dir/UIManager.cpp.obj: CMakeFiles/AgarClone.dir/includes_CXX.rsp
-CMakeFiles/AgarClone.dir/UIManager.cpp.obj: D:/code/project/0.0.1/AgarClone_Qt/UIManager.cpp
-CMakeFiles/AgarClone.dir/UIManager.cpp.obj: CMakeFiles/AgarClone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/AgarClone.dir/UIManager.cpp.obj"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/AgarClone.dir/UIManager.cpp.obj -MF CMakeFiles\AgarClone.dir\UIManager.cpp.obj.d -o CMakeFiles\AgarClone.dir\UIManager.cpp.obj -c D:\code\project\0.0.1\AgarClone_Qt\UIManager.cpp
-
-CMakeFiles/AgarClone.dir/UIManager.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/AgarClone.dir/UIManager.cpp.i"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\code\project\0.0.1\AgarClone_Qt\UIManager.cpp > CMakeFiles\AgarClone.dir\UIManager.cpp.i
-
-CMakeFiles/AgarClone.dir/UIManager.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/AgarClone.dir/UIManager.cpp.s"
-	D:\anzhuangweizhi\qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\code\project\0.0.1\AgarClone_Qt\UIManager.cpp -o CMakeFiles\AgarClone.dir\UIManager.cpp.s
-
 # Object files for target AgarClone
 AgarClone_OBJECTS = \
 "CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.obj" \
 "CMakeFiles/AgarClone.dir/main.cpp.obj" \
 "CMakeFiles/AgarClone.dir/Ball.cpp.obj" \
 "CMakeFiles/AgarClone.dir/Food.cpp.obj" \
-"CMakeFiles/AgarClone.dir/SkillBall.cpp.obj" \
-"CMakeFiles/AgarClone.dir/Hazard.cpp.obj" \
+"CMakeFiles/AgarClone.dir/EffectBall.cpp.obj" \
 "CMakeFiles/AgarClone.dir/EjectBall.cpp.obj" \
 "CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj" \
 "CMakeFiles/AgarClone.dir/AIController.cpp.obj" \
 "CMakeFiles/AgarClone.dir/GameScene.cpp.obj" \
-"CMakeFiles/AgarClone.dir/GameView.cpp.obj" \
-"CMakeFiles/AgarClone.dir/UIManager.cpp.obj"
+"CMakeFiles/AgarClone.dir/GameView.cpp.obj"
 
 # External object files for target AgarClone
 AgarClone_EXTERNAL_OBJECTS =
@@ -270,14 +238,12 @@ AgarClone.exe: CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.o
 AgarClone.exe: CMakeFiles/AgarClone.dir/main.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/Ball.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/Food.cpp.obj
-AgarClone.exe: CMakeFiles/AgarClone.dir/SkillBall.cpp.obj
-AgarClone.exe: CMakeFiles/AgarClone.dir/Hazard.cpp.obj
+AgarClone.exe: CMakeFiles/AgarClone.dir/EffectBall.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/EjectBall.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/SpatialGrid.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/AIController.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/GameScene.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/GameView.cpp.obj
-AgarClone.exe: CMakeFiles/AgarClone.dir/UIManager.cpp.obj
 AgarClone.exe: CMakeFiles/AgarClone.dir/build.make
 AgarClone.exe: D:/anzhuangweizhi/qt/6.11.0/mingw_64/lib/libQt6Widgets.a
 AgarClone.exe: D:/anzhuangweizhi/qt/6.11.0/mingw_64/lib/libQt6Gui.a
@@ -285,7 +251,7 @@ AgarClone.exe: D:/anzhuangweizhi/qt/6.11.0/mingw_64/lib/libQt6Core.a
 AgarClone.exe: CMakeFiles/AgarClone.dir/linkLibs.rsp
 AgarClone.exe: CMakeFiles/AgarClone.dir/objects1.rsp
 AgarClone.exe: CMakeFiles/AgarClone.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable AgarClone.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable AgarClone.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\AgarClone.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

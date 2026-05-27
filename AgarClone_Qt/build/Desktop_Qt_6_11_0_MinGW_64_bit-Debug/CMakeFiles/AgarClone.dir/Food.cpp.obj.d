@@ -1,6 +1,7 @@
 CMakeFiles/AgarClone.dir/Food.cpp.obj: \
  D:\code\project\0.0.1\AgarClone_Qt\Food.cpp \
  D:\code\project\0.0.1\AgarClone_Qt\Food.h \
+ D:\code\project\0.0.1\AgarClone_Qt\ResBall.h \
  D:\code\project\0.0.1\AgarClone_Qt\Entity.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsEllipseItem \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
@@ -374,11 +375,11 @@ CMakeFiles/AgarClone.dir/Food.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qimage.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QBrush \
+ D:\code\project\0.0.1\AgarClone_Qt\Constants.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainter \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtextoption.h \

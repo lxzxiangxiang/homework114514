@@ -5,7 +5,6 @@
 #include <QList>
 
 class Ball;
-class Food;
 
 class AIController {
 public:
@@ -16,7 +15,7 @@ public:
         QPointF patrolTarget;
     };
 
-    static void updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<Food*>& foods, qreal dt);
+    static void updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt);
     static void resetState(Ball* ai);
 
 private:

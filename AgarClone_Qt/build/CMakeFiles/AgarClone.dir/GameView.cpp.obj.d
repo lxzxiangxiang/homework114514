@@ -434,7 +434,6 @@ CMakeFiles/AgarClone.dir/GameView.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsScene \
  D:\code\project\0.0.1\AgarClone_Qt\SpatialGrid.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qvector.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
@@ -444,12 +443,13 @@ CMakeFiles/AgarClone.dir/GameView.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem \
+ D:\code\project\0.0.1\AgarClone_Qt\AIController.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:\code\project\0.0.1\AgarClone_Qt\Constants.h \
  D:\code\project\0.0.1\AgarClone_Qt\Ball.h \
  D:\code\project\0.0.1\AgarClone_Qt\Entity.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsEllipseItem \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QBrush \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QApplication \

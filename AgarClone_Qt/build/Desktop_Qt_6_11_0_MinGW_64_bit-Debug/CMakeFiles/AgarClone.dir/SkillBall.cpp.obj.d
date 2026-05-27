@@ -374,7 +374,6 @@ CMakeFiles/AgarClone.dir/SkillBall.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qimage.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \

@@ -353,6 +353,12 @@
 			null
 		],
 		[
+			"D:/code/project/0.0.1/AgarClone_Qt/EffectBall.h",
+			"MU",
+			"EWIEGA46WW/moc_EffectBall.cpp",
+			null
+		],
+		[
 			"D:/code/project/0.0.1/AgarClone_Qt/EjectBall.h",
 			"MU",
 			"EWIEGA46WW/moc_EjectBall.cpp",
@@ -383,27 +389,15 @@
 			null
 		],
 		[
-			"D:/code/project/0.0.1/AgarClone_Qt/Hazard.h",
+			"D:/code/project/0.0.1/AgarClone_Qt/ResBall.h",
 			"MU",
-			"EWIEGA46WW/moc_Hazard.cpp",
-			null
-		],
-		[
-			"D:/code/project/0.0.1/AgarClone_Qt/SkillBall.h",
-			"MU",
-			"EWIEGA46WW/moc_SkillBall.cpp",
+			"EWIEGA46WW/moc_ResBall.cpp",
 			null
 		],
 		[
 			"D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.h",
 			"MU",
 			"EWIEGA46WW/moc_SpatialGrid.cpp",
-			null
-		],
-		[
-			"D:/code/project/0.0.1/AgarClone_Qt/UIManager.h",
-			"MU",
-			"EWIEGA46WW/moc_UIManager.cpp",
 			null
 		]
 	],
@@ -481,14 +475,12 @@
 	[
 		[ "D:/code/project/0.0.1/AgarClone_Qt/AIController.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/Ball.cpp", "MU", null ],
+		[ "D:/code/project/0.0.1/AgarClone_Qt/EffectBall.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/EjectBall.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/Food.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/GameScene.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/GameView.cpp", "MU", null ],
-		[ "D:/code/project/0.0.1/AgarClone_Qt/Hazard.cpp", "MU", null ],
-		[ "D:/code/project/0.0.1/AgarClone_Qt/SkillBall.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.cpp", "MU", null ],
-		[ "D:/code/project/0.0.1/AgarClone_Qt/UIManager.cpp", "MU", null ],
 		[ "D:/code/project/0.0.1/AgarClone_Qt/main.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],

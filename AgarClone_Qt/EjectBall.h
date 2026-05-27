@@ -1,20 +1,18 @@
 #pragma once
 
-#include "Entity.h"
+#include "ResBall.h"
 
 class QPainter;
 class QStyleOptionGraphicsItem;
 class QWidget;
 
-class EjectBall : public Entity {
+class EjectBall : public ResBall {
 public:
     qreal vx = 0;
     qreal vy = 0;
     qreal lifetime = 20.0f;
 
     EjectBall(QPointF pos, QColor color, qreal dx, qreal dy);
-
-    EntityType entityType() const override { return EntityType::EjectBall; }
 
     void update(qreal dt) override;
     void onEaten(Entity* eater) override;

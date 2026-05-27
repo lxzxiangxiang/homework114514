@@ -149,6 +149,7 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qyieldcpu.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QKeyEvent \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QTransform \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QWheelEvent \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qaction.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbitmap.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
@@ -169,6 +170,7 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qkeysequence.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpaintdevice.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpalette.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h \
@@ -189,9 +191,12 @@ D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Ag
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qvectornd.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qwindowdefs.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qwindowdefs_win.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsView \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qframe.h \
+  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsscene.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsview.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qscrollarea.h \

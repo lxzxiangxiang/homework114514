@@ -2,22 +2,12 @@
 // 实现三级 AI 决策系统：威胁检测→猎物追踪→巡逻→分裂决策，以及平滑转向
 #include "AIController.h"
 #include "Ball.h"
-#include "Food.h"
 #include "Constants.h"
 #include <QRandomGenerator>
 #include <cmath>
 
 // 每个 AI 球体独立维护的决策状态表（静态成员）
 QHash<Ball*, AIController::AIState> AIController::s_states;
-
-// 限制向量长度不超过 maxLen
-static qreal clampLength(const QPointF& vec, qreal maxLen)
-{
-    qreal len = std::sqrt(vec.x() * vec.x() + vec.y() * vec.y());
-    if (len <= maxLen || len < 1e-6)
-        return len;
-    return maxLen;
-}
 
 // 计算向量长度
 static qreal length(const QPointF& vec)
@@ -35,7 +25,7 @@ static QPointF normalized(const QPointF& vec)
 }
 
 // AI 决策主函数：每帧调用一次，驱动单个 AI 球体的自主行为
-void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<Food*>& foods, qreal dt)
+void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 {
     // 空指针或死亡检查
     if (!ai || !ai->isAlive())
@@ -73,7 +63,9 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<
         for (Ball* other : allBalls) {
             if (other == ai || !other->isAlive())
                 continue;
-            if (other->radius() <= myRadius * GameConstants::EAT_RATIO)
+            if (other->effect == EffectType::Invisible && other->effectTimer > 0)
+                continue;
+            if (other->radius() <= myRadius * GameConstants::Ball::EAT_RATIO)
                 continue;
             QPointF delta = other->pos() - myPos;
             qreal dist = length(delta);
@@ -92,6 +84,8 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<
         qreal bestPreyRadius = 0;
         for (Ball* other : allBalls) {
             if (other == ai || !other->isAlive())
+                continue;
+            if (other->effect == EffectType::Invisible && other->effectTimer > 0)
                 continue;
             if (other->radius() >= myRadius * 0.9)
                 continue;
@@ -115,8 +109,8 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<
             // ===== 巡逻 =====
             // 无威胁无猎物时，随机选择地图内巡逻点移动
             if (state.patrolTarget.isNull() || length(myPos - state.patrolTarget) < myRadius) {
-                qreal rx = QRandomGenerator::global()->generateDouble() * GameConstants::MAP_WIDTH;
-                qreal ry = QRandomGenerator::global()->generateDouble() * GameConstants::MAP_HEIGHT;
+                qreal rx = QRandomGenerator::global()->generateDouble() * GameConstants::World::MAP_WIDTH;
+                qreal ry = QRandomGenerator::global()->generateDouble() * GameConstants::World::MAP_HEIGHT;
                 state.patrolTarget = QPointF(rx, ry);
             }
             state.targetDirection = normalized(state.patrolTarget - myPos);
@@ -126,15 +120,19 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const QList<
         // 分裂逃生：有威胁且距离 < 自身半径×3，朝逃离方向分裂
         // 分裂猎食：有猎物且距离 < 自身半径×4 且半径 > 猎物×1.5，朝猎物方向分裂
         // Level 3 更激进：阈值更宽
-        if (level >= 2 && ai->radius() >= GameConstants::SPLIT_THRESHOLD && ai->splitTimer <= 0) {
-            qreal splitDist = (level >= 3) ? 5.0 : 4.0;
+        if (level >= 2 && ai->radius() >= GameConstants::Ball::SPLIT_THRESHOLD) {
+            int sameIdCount = 0;
+            for (Ball* b : allBalls) {
+                if (b->isAlive() && b->aiId == ai->aiId) sameIdCount++;
+            }
+            if (sameIdCount < GameConstants::Spawning::MAX_BALLS_PER_AI) {
+                qreal splitDist = (level >= 3) ? 5.0 : 4.0;
             if (hasThreat && length(fleeDirection) < myRadius * 3.0) {
                 ai->pendingSplitBall = ai->split(normalized(fleeDirection));
-                if (ai->pendingSplitBall) ai->splitTimer = 1.5f;
             } else if (hasPrey && length(chaseDirection) < myRadius * splitDist
                        && myRadius > bestPreyRadius * 1.5) {
                 ai->pendingSplitBall = ai->split(normalized(chaseDirection));
-                if (ai->pendingSplitBall) ai->splitTimer = 1.5f;
+            }
             }
         }
     }

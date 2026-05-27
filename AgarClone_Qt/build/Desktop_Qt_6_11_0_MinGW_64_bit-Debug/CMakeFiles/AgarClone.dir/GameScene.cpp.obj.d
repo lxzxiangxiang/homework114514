@@ -360,7 +360,6 @@ CMakeFiles/AgarClone.dir/GameScene.cpp.obj: \
  D:\code\project\0.0.1\AgarClone_Qt\SpatialGrid.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qhash.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qvector.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
@@ -387,15 +386,15 @@ CMakeFiles/AgarClone.dir/GameScene.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qalloc.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QColor \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPen \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QBrush \
  D:\code\project\0.0.1\AgarClone_Qt\Constants.h \
  D:\code\project\0.0.1\AgarClone_Qt\Food.h \
- D:\code\project\0.0.1\AgarClone_Qt\SkillBall.h \
- D:\code\project\0.0.1\AgarClone_Qt\Hazard.h \
+ D:\code\project\0.0.1\AgarClone_Qt\ResBall.h \
+ D:\code\project\0.0.1\AgarClone_Qt\EffectBall.h \
  D:\code\project\0.0.1\AgarClone_Qt\EjectBall.h \
  D:\code\project\0.0.1\AgarClone_Qt\AIController.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPointF \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRandomGenerator \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrandom.h \
  D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/random \
@@ -406,4 +405,11 @@ CMakeFiles/AgarClone.dir/GameScene.cpp.obj: \
  D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/xmmintrin.h \
  D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/mmintrin.h \
  D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/mwaitintrin.h \
- D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/random.tcc
+ D:/anzhuangweizhi/qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/random.tcc \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QPainter \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qtextoption.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontinfo.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontvariableaxis.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h

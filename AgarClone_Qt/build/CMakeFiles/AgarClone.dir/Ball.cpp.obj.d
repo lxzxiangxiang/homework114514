@@ -394,4 +394,15 @@ CMakeFiles/AgarClone.dir/Ball.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfont.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qendian.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontvariableaxis.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qfontmetrics.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRandomGenerator \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qrandom.h \
+ D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/random \
+ D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/random.h \
+ D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32/bits/opt_random.h \
+ D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/pmmintrin.h \
+ D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/emmintrin.h \
+ D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xmmintrin.h \
+ D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mmintrin.h \
+ D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mwaitintrin.h \
+ D:/anzhuangweizhi/msys2/ucrt64/include/c++/15.2.0/bits/random.tcc

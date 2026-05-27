@@ -2,7 +2,6 @@ AgarClone_autogen/timestamp: \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject \
-	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QRect \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSize \
@@ -152,6 +151,7 @@ AgarClone_autogen/timestamp: \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qyieldcpu.h \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QKeyEvent \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QTransform \
+	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QWheelEvent \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qaction.h \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbitmap.h \
 	D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h \
@@ -628,6 +628,8 @@ AgarClone_autogen/timestamp: \
 	D:/code/project/0.0.1/AgarClone_Qt/Ball.h \
 	D:/code/project/0.0.1/AgarClone_Qt/CMakeLists.txt \
 	D:/code/project/0.0.1/AgarClone_Qt/Constants.h \
+	D:/code/project/0.0.1/AgarClone_Qt/EffectBall.cpp \
+	D:/code/project/0.0.1/AgarClone_Qt/EffectBall.h \
 	D:/code/project/0.0.1/AgarClone_Qt/EjectBall.cpp \
 	D:/code/project/0.0.1/AgarClone_Qt/EjectBall.h \
 	D:/code/project/0.0.1/AgarClone_Qt/Entity.h \
@@ -637,14 +639,9 @@ AgarClone_autogen/timestamp: \
 	D:/code/project/0.0.1/AgarClone_Qt/GameScene.h \
 	D:/code/project/0.0.1/AgarClone_Qt/GameView.cpp \
 	D:/code/project/0.0.1/AgarClone_Qt/GameView.h \
-	D:/code/project/0.0.1/AgarClone_Qt/Hazard.cpp \
-	D:/code/project/0.0.1/AgarClone_Qt/Hazard.h \
-	D:/code/project/0.0.1/AgarClone_Qt/SkillBall.cpp \
-	D:/code/project/0.0.1/AgarClone_Qt/SkillBall.h \
+	D:/code/project/0.0.1/AgarClone_Qt/ResBall.h \
 	D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.cpp \
 	D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.h \
-	D:/code/project/0.0.1/AgarClone_Qt/UIManager.cpp \
-	D:/code/project/0.0.1/AgarClone_Qt/UIManager.h \
 	D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qtcreator/cmake-helper/maintenance_tool_provider.cmake \
 	D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qtcreator/cmake-helper/package-manager.cmake \
 	D:/code/project/0.0.1/AgarClone_Qt/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qtcreator/cmake-helper/qtcreator-project.cmake \

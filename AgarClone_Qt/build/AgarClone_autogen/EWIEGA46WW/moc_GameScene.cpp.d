@@ -212,7 +212,6 @@ D:/code/project/0.0.1/AgarClone_Qt/build/AgarClone_autogen/EWIEGA46WW/moc_GameSc
   D:/anzhuangweizhi/msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/syslimits.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
-  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q17memory.h \
   D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20bit.h \

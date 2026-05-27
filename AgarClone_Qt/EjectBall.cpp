@@ -1,17 +1,16 @@
 // 抛射物(EjectBall)实体实现 — 球体吐孢射出的孢子
-// 初速度 8 像素/帧，逐渐减速(每帧 ×0.98)，存在 20 秒后消失
+// 速度 200 单位/s，逐渐衰减(每 dt ×0.98)，20 秒后消失
 #include "EjectBall.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
 
 EjectBall::EjectBall(QPointF pos, QColor color, qreal dx, qreal dy)
-    : Entity(8.0, color)    // 半径固定为 8，颜色与吐孢者相同
+    : ResBall(M_PI * GameConstants::EntityRadius::EJECTBALL * GameConstants::EntityRadius::EJECTBALL, color)
 {
     setPos(pos);
-    // 初速度 = 方向向量 × 8 像素/帧
-    vx = dx * 8.0;
-    vy = dy * 8.0;
+    vx = dx * 200.0;
+    vy = dy * 200.0;
 }
 
 // 每帧更新：递减生命周期、移动位置、速度衰减
@@ -45,5 +44,5 @@ void EjectBall::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
 
 QRectF EjectBall::boundingRect() const
 {
-    return QRectF(-m_radius, -m_radius, m_radius * 2, m_radius * 2);
+    return QRectF(-radius(), -radius(), radius() * 2, radius() * 2);
 }

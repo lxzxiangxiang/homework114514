@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QHash>
-#include <QPair>
 #include <QVector>
 #include <QList>
+#include <utility>
 
 class Entity;
 class Ball;
@@ -19,5 +19,5 @@ public:
     QList<Entity*> getNearby(qreal x, qreal y, qreal radius) const;
 
 private:
-    QHash<QPair<int, int>, QVector<Entity*>> m_grid;
+    QHash<std::pair<int, int>, QVector<Entity*>> m_grid;
 };

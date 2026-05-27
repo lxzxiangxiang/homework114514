@@ -361,7 +361,6 @@ CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.obj: \
  D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qhash.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qvector.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList \
@@ -436,11 +435,9 @@ CMakeFiles/AgarClone.dir/AgarClone_autogen/mocs_compilation.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qinputmethod.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qlocale.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qguiapplication_platform.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QWheelEvent \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
- D:\code\project\0.0.1\AgarClone_Qt\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\AgarClone_autogen\EWIEGA46WW/moc_UIManager.cpp \
- D:/code/project/0.0.1/AgarClone_Qt/UIManager.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
- D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem

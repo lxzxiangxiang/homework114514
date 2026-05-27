@@ -155,6 +155,7 @@ D:/code/project/0.0.1/AgarClone_Qt/GameView.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qyieldcpu.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QKeyEvent
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QTransform
+ mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QWheelEvent
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qaction.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbitmap.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qbrush.h
@@ -175,6 +176,7 @@ D:/code/project/0.0.1/AgarClone_Qt/GameView.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qkeysequence.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpaintdevice.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainter.h
+ mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpalette.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpen.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpixelformat.h
@@ -195,9 +197,12 @@ D:/code/project/0.0.1/AgarClone_Qt/GameView.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qvectornd.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qwindowdefs.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qwindowdefs_win.h
+ mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem
+ mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsView
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qabstractscrollarea.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qframe.h
+ mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsscene.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsview.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qscrollarea.h
@@ -427,7 +432,6 @@ D:/code/project/0.0.1/AgarClone_Qt/GameScene.h
  mmc:Q_OBJECT
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QHash
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QList
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QPair
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QVector
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q17memory.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20bit.h
@@ -786,7 +790,6 @@ D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.h
 D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
  mmc:Q_OBJECT
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QObject
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QTimer
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q17memory.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20bit.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20functional.h
@@ -796,7 +799,6 @@ D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q20utility.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q23type_traits.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/q23utility.h
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qabstracteventdispatcher.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qalgorithms.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qalloc.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qanystringview.h
@@ -807,7 +809,6 @@ D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qatomic.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qatomic_cxx11.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbasicatomic.h
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbasictimer.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbindingstorage.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbytearray.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qbytearrayalgorithms.h
@@ -827,10 +828,8 @@ D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qcontiguouscache.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdarwinhelpers.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdatastream.h
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdeadlinetimer.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qdebug.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qendian.h
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qeventloop.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qexceptionhandling.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qflags.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qfloat16.h
@@ -903,7 +902,6 @@ D:/code/project/0.0.1/AgarClone_Qt/UIManager.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtenvironmentvariables.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtextstream.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtformat_impl.h
- mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtimer.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtmetamacros.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtnoop.h
  mdp:D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qtpreprocessorsupport.h
@@ -1190,3 +1188,6 @@ D:/code/project/0.0.1/AgarClone_Qt/SkillBall.cpp
 D:/code/project/0.0.1/AgarClone_Qt/SpatialGrid.cpp
 D:/code/project/0.0.1/AgarClone_Qt/UIManager.cpp
 D:/code/project/0.0.1/AgarClone_Qt/main.cpp
+D:/code/project/0.0.1/AgarClone_Qt/EffectBall.h
+D:/code/project/0.0.1/AgarClone_Qt/EffectBall.cpp
+D:/code/project/0.0.1/AgarClone_Qt/ResBall.h

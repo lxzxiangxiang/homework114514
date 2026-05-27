@@ -423,6 +423,11 @@ CMakeFiles/AgarClone.dir/main.cpp.obj: \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qinputmethod.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/qlocale.h \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qguiapplication_platform.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/QWheelEvent \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtCore/QSet \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsRectItem \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtGui/qpainterpath.h \
+ D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QGraphicsTextItem \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/QApplication \
  D:/anzhuangweizhi/qt/6.11.0/mingw_64/include/QtWidgets/qapplication.h
