@@ -14,8 +14,9 @@ static QColor colorForEffect(EffectType type)
     case EffectType::Bomb:      return QColor(255, 80, 80);
     case EffectType::Trap:      return QColor(139, 90, 43);
     case EffectType::Poison:    return QColor(0, 200, 0);
-    default:                    return Qt::white;
+    case EffectType::None:   return Qt::white;
     }
+    return Qt::white;
 }
 
 EffectBall::EffectBall(QPointF pos, EffectType type)
@@ -197,7 +198,7 @@ void EffectBall::drawIcon(QPainter* painter, qreal x, qreal y, qreal s)
         painter->drawEllipse(QPointF(x, y+s*0.2), s*0.3, s*0.4);
         break;
     }
-    default: break;
+    case EffectType::None: break;
     }
 }
 

@@ -35,7 +35,6 @@ private:
     QSet<int> m_keysPressed;
     qreal m_currentZoom = 1.5f;
     bool m_splitFired = false;
-    bool m_ejectFired = false;
 
     QGraphicsRectItem* m_menuBackground = nullptr;
     QGraphicsRectItem* m_pauseOverlay = nullptr;

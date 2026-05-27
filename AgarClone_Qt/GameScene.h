@@ -7,7 +7,6 @@
 class Ball;
 class Food;
 class EffectBall;
-class EjectBall;
 
 class GameScene : public QGraphicsScene {
     Q_OBJECT
@@ -23,19 +22,16 @@ public:
     void spawnAIBall(int targetId = 0);
 
     void addPlayerBall(Ball* ball);
-    void addEjectBall(class EjectBall* eb);
 
     QList<Ball*> playerBalls;
     QList<Ball*> aiBalls;
     QList<Food*> foods;
     QList<EffectBall*> effectBalls;
-    QList<EjectBall*> ejectBalls;
 
     qreal score = 0;
     qreal survivalTime = 0;
     QPointF playerInputDirection = {0, 0};
     bool wantSplit = false;
-    bool wantEject = false;
 
     QString hudScoreText;
     QString hudTimeText;

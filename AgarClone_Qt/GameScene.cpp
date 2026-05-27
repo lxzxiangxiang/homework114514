@@ -4,7 +4,6 @@
 #include "Ball.h"
 #include "Food.h"
 #include "EffectBall.h"
-#include "EjectBall.h"
 #include "AIController.h"
 #include "Constants.h"
 
@@ -100,18 +99,6 @@ void GameScene::processSplitEject()
         }
         wantSplit = false;
     }
-
-    if (wantEject) {
-        for (Ball* ball : playerBalls) {
-            if (ball->isAlive() && ball->radius() >= GameConstants::Ball::EJECT_THRESHOLD) {
-                EjectBall* eb = ball->eject();
-                if (eb) {
-                    addEjectBall(eb);
-                }
-            }
-        }
-        wantEject = false;
-    }
 }
 
 QList<Ball*> GameScene::buildAllBalls() const
@@ -178,9 +165,6 @@ void GameScene::updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt)
 
 void GameScene::updateProjectiles(qreal dt)
 {
-    for (EjectBall* eb : ejectBalls) {
-        if (eb->isAlive()) { eb->update(dt); }
-    }
     for (EffectBall* eb : effectBalls) {
         if (eb->isAlive()) { eb->update(dt); }
     }
@@ -258,13 +242,6 @@ void GameScene::addPlayerBall(Ball* ball)
     playerBalls.append(ball);
 }
 
-// 注册吐孢产生的孢子到场景和列表
-void GameScene::addEjectBall(EjectBall* eb)
-{
-    addItem(eb);
-    ejectBalls.append(eb);
-}
-
 // ===== 碰撞检测 =====
 // 使用空间网格优化，按顺序处理 5 种碰撞
 // 碰撞判定：圆心距离 ≤ 半径之和，使用平方距离避免开方
@@ -276,7 +253,7 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
         if (b->isAlive()) m_spatialGrid.add(b);
     }
 
-    // 单次遍历处理 4 种实体碰撞（Food/SkillBall/Hazard/EjectBall）
+    // 单次遍历处理 3 种实体碰撞（Food/SkillBall/Hazard）
     for (Ball* ball : allBalls) {
         if (!ball->isAlive()) continue;
         bool hasShield = ball->hasShield();
@@ -303,19 +280,6 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
             if (distSq > contactDist * contactDist) continue;
             ball->applyEffect(eb->effectType(), allBalls);
             eb->onEaten(ball);
-        }
-
-        for (EjectBall* eb : ejectBalls) {
-            if (!eb->isAlive()) continue;
-            qreal dx = ball->x() - eb->x();
-            qreal dy = ball->y() - eb->y();
-            qreal distSq = dx * dx + dy * dy;
-            qreal contactDist = ball->radius() + eb->radius();
-            if (distSq > contactDist * contactDist) continue;
-            if (ball->radius() > eb->radius() * GameConstants::Ball::EAT_RATIO) {
-                ball->eat(eb);
-                if (ball->isPlayer) score += 0.5;
-            }
         }
     }
 
@@ -414,5 +378,4 @@ void GameScene::removeDeadEntities()
     removeFromList(aiBalls);
     removeFromList(foods);
     removeFromList(effectBalls);
-    removeFromList(ejectBalls);
 }

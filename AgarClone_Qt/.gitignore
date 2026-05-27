@@ -1,0 +1,45 @@
+# Build
+build/
+*.exe
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+
+# Qt Creator
+*.pro.user
+*.pro.user.*
+CMakeLists.txt.user*
+.cb_*
+*.creator*
+*.config
+*.cbs
+*.autosave
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.autogen/
+.qtc_clangd/
+.qtcreator/
+Debug/
+Release/
+Profile/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs / archives
+*.zip
+*.tar.gz
+*.7z
+docs/

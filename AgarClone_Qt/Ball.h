@@ -16,7 +16,6 @@ public:
     void move(qreal dx, qreal dy, qreal dt);
     qreal speed() const;
     Ball* split(QPointF direction);
-    class EjectBall* eject();
     void eat(Entity* target);
     void applyEffect(EffectType effect, const QList<Ball*>& allBalls);
     void addInitialEffect(EffectType t, qreal timer);

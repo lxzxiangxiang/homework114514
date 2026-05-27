@@ -83,7 +83,7 @@ void GameView::advanceGame()
                 case EffectType::Bomb:      name = QStringLiteral("炸弹"); break;
                 case EffectType::Trap:      name = QStringLiteral("陷阱"); break;
                 case EffectType::Poison:    name = QStringLiteral("中毒"); break;
-                default: break;
+                case EffectType::None: break;
                 }
                 effectParts.append(name + QString("(%1s)").arg(ae.timer, 0, 'f', 1));
             }
@@ -133,7 +133,7 @@ void GameView::keyPressEvent(QKeyEvent* event)
         if (key == Qt::Key_Escape) {
             pauseGame();
         } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D
-                   || key == Qt::Key_Space || key == Qt::Key_E) {
+                   || key == Qt::Key_Space) {
             m_keysPressed.insert(key);
         }
         break;
@@ -342,7 +342,7 @@ void GameView::updateCamera()
 
 // ===== 处理玩家键盘输入 =====
 // 从 m_keysPressed 读取 WASD/方向键，计算归一化方向向量
-// Space 设置分裂意图，E 设置吐孢意图
+// Space 设置分裂意图
 void GameView::processPlayerInput()
 {
     qreal dx = 0, dy = 0;
@@ -359,23 +359,15 @@ void GameView::processPlayerInput()
         dy /= len;
     }
 
-    // 将输入写入 GameScene
     m_gameScene->playerInputDirection = QPointF(dx, dy);
 
     bool spaceDown = m_keysPressed.contains(Qt::Key_Space);
-    bool eDown = m_keysPressed.contains(Qt::Key_E);
 
     if (spaceDown && !m_splitFired) {
         m_gameScene->wantSplit = true;
         m_splitFired = true;
     }
     if (!spaceDown) m_splitFired = false;
-
-    if (eDown && !m_ejectFired) {
-        m_gameScene->wantEject = true;
-        m_ejectFired = true;
-    }
-    if (!eDown) m_ejectFired = false;
 }
 
 void GameView::createMenuItems()
@@ -404,7 +396,6 @@ void GameView::createMenuItems()
     QString hintText = QStringLiteral(
         "WASD - 移动\n"
         "空格 - 分裂\n"
-        "E - 吐孢\n"
         "ESC - 暂停\n\n"
         "按 Enter 开始");
     m_menuHint = new QGraphicsTextItem(hintText);

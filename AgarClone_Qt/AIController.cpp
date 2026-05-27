@@ -173,8 +173,9 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 QPointF AIController::getLastDirection(Ball* ai)
 {
     if (!ai || !ai->isAlive()) return QPointF(1, 0);
-    AIState& state = s_states[ai];
-    return state.currentDirection.isNull() ? QPointF(1, 0) : state.currentDirection;
+    auto it = s_states.constFind(ai);
+    if (it == s_states.constEnd()) return QPointF(1, 0);
+    return it->currentDirection.isNull() ? QPointF(1, 0) : it->currentDirection;
 }
 
 // 清除指定 AI 的状态（AI 死亡时调用）

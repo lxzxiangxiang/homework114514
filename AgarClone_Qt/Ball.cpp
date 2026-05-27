@@ -1,5 +1,4 @@
 #include "Ball.h"
-#include "EjectBall.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QRandomGenerator>
@@ -82,20 +81,6 @@ Ball* Ball::split(QPointF direction)
     return nb;
 }
 
-EjectBall* Ball::eject()
-{
-    if (radius() < GameConstants::Ball::EJECT_THRESHOLD) return nullptr;
-
-    qreal ejectR = GameConstants::EntityRadius::EJECTBALL;
-    m_mass -= M_PI * ejectR * ejectR;
-    if (m_mass < M_PI * GameConstants::World::MIN_RADIUS * GameConstants::World::MIN_RADIUS)
-        m_mass = M_PI * GameConstants::World::MIN_RADIUS * GameConstants::World::MIN_RADIUS;
-
-    QPointF dir = splitDir(QPointF(lastDx, lastDy), lastDx, lastDy);
-    qreal spJitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.3;
-    return new EjectBall(pos(), m_color, dir.x() * spJitter, dir.y() * spJitter);
-}
-
 void Ball::eat(Entity* target)
 {
     m_mass += target->mass();
@@ -116,7 +101,7 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
     case EffectType::Bomb:      break;
     case EffectType::Trap:      timer = GameConstants::EffectDuration::TRAP; break;
     case EffectType::Poison:    timer = GameConstants::EffectDuration::POISON; break;
-    default: return;
+    case EffectType::None: return;
     }
 
     if (et == EffectType::Bomb) {
@@ -126,14 +111,15 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
         return;
     }
 
-    if (et == EffectType::Grow) {
-        m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
-    }
-
     ActiveEffect ae;
     ae.type = et;
     ae.timer = timer;
     ae.growOriginalMass = (et == EffectType::Grow) ? m_mass : 0;
+
+    if (et == EffectType::Grow) {
+        m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
+    }
+
     m_effects.append(ae);
 
     for (Ball* other : allBalls) {
@@ -212,13 +198,17 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     QColor drawColor = m_color;
 
     if (hasEffect(EffectType::Shield)) {
-        qreal flash = std::abs(std::sin(m_effects[0].timer * 10.0));
+        qreal shieldTimer = 0;
+        for (const auto& ae : m_effects) {
+            if (ae.type == EffectType::Shield) { shieldTimer = ae.timer; break; }
+        }
+        qreal flash = std::abs(std::sin(shieldTimer * 10.0));
         drawColor = QColor(
             qMin(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
             qMin(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
             qMin(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
         qreal glowR = r * 1.3;
-        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(m_effects[0].timer * 5.0)));
+        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(shieldTimer * 5.0)));
         painter->setPen(Qt::NoPen);
         painter->drawEllipse(QPointF(0, 0), glowR, glowR);
     }
