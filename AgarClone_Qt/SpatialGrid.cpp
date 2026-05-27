@@ -12,14 +12,14 @@ void SpatialGrid::add(Entity* entity)
 {
     int cx = static_cast<int>(entity->pos().x()) / CELL_SIZE;
     int cy = static_cast<int>(entity->pos().y()) / CELL_SIZE;
-    m_grid[{cx, cy}].append(entity);
+    m_grid[qMakePair(cx, cy)].append(entity);
 }
 
 void SpatialGrid::remove(Entity* entity)
 {
     int cx = static_cast<int>(entity->pos().x()) / CELL_SIZE;
     int cy = static_cast<int>(entity->pos().y()) / CELL_SIZE;
-    std::pair<int, int> key = {cx, cy};
+    QPair<int, int> key = qMakePair(cx, cy);
     auto it = m_grid.find(key);
     if (it != m_grid.end()) {
         it.value().removeAll(entity);
@@ -48,7 +48,7 @@ QList<Entity*> SpatialGrid::getNearby(qreal x, qreal y, qreal radius) const
 
     for (int dx = -range; dx <= range; ++dx) {
         for (int dy = -range; dy <= range; ++dy) {
-            std::pair<int, int> key = {cx + dx, cy + dy};
+            QPair<int, int> key = qMakePair(cx + dx, cy + dy);
             auto it = m_grid.constFind(key);
             if (it != m_grid.constEnd()) {
                 for (Entity* other : it.value()) {

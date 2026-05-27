@@ -20,7 +20,7 @@ public:
     void spawnFood(int count);
     void spawnSkillBall();
     void spawnHazard();
-    void spawnAIBall();
+    void spawnAIBall(int aiId = -1);
 
     void addPlayerBall(Ball* ball);
     void addEjectBall(class EjectBall* eb);

@@ -20,8 +20,8 @@ GameScene::GameScene(QObject* parent)
 
     spawnFood(200);
 
-    for (int i = 0; i < GameConstants::Spawning::AIBALL_COUNT; ++i) {
-        spawnAIBall();
+    for (int i = 1; i <= GameConstants::Spawning::AIBALL_COUNT; ++i) {
+        spawnAIBall(i);
     }
 
     auto* player = new Ball(M_PI * 15.0 * 15.0, QColor(255, 80, 80), true, 0);
@@ -44,14 +44,25 @@ void GameScene::updateGame(qreal dt)
     updateMagnetEffect(allBalls, dt);
     updateProjectiles(dt);
 
+    int buffCount = 0;
+    int hazardCount = 0;
+    for (EffectBall* eb : effectBalls) {
+        if (!eb->isAlive()) continue;
+        if (isDebuff(eb->effectType())) {
+            ++hazardCount;
+        } else {
+            ++buffCount;
+        }
+    }
+
     m_skillSpawnTimer -= dt;
-    if (m_skillSpawnTimer <= 0 && effectBalls.size() < GameConstants::Spawning::MAX_EFFECT) {
+    if (m_skillSpawnTimer <= 0 && buffCount < GameConstants::Spawning::MAX_EFFECT) {
         spawnSkillBall();
         m_skillSpawnTimer = 2.0f + QRandomGenerator::global()->bounded(2.0);
     }
 
     m_hazardSpawnTimer -= dt;
-    if (m_hazardSpawnTimer <= 0 && effectBalls.size() < GameConstants::Spawning::MAX_HAZARD) {
+    if (m_hazardSpawnTimer <= 0 && hazardCount < GameConstants::Spawning::MAX_HAZARD) {
         spawnHazard();
         m_hazardSpawnTimer = 3.0f + QRandomGenerator::global()->bounded(3.0);
     }
@@ -69,7 +80,7 @@ void GameScene::updateGame(qreal dt)
     for (Ball* ai : aiBalls) { if (ai->isAlive()) aliveAiIds.insert(ai->aiId); }
     for (int i = 1; i <= GameConstants::Spawning::AIBALL_COUNT; ++i) {
         if (!aliveAiIds.contains(i)) {
-            spawnAIBall();
+            spawnAIBall(i);
         }
     }
 
@@ -186,8 +197,9 @@ bool GameScene::sameOwner(const Ball* a, const Ball* b)
 void GameScene::spawnFood(int count)
 {
     for (int i = 0; i < count; ++i) {
-        qreal r = GameConstants::EntityRadius::FOOD_MIN + QRandomGenerator::global()->generateDouble() * (GameConstants::EntityRadius::FOOD_MAX - GameConstants::EntityRadius::FOOD_MIN + 1);
-        auto* food = new Food(M_PI * r * r);
+        qreal r = GameConstants::EntityRadius::FOOD_MIN + QRandomGenerator::global()->generateDouble()
+            * (GameConstants::EntityRadius::FOOD_MAX - GameConstants::EntityRadius::FOOD_MIN);
+        auto* food = new Food(r);
         qreal x = static_cast<qreal>(GameConstants::World::MAP_WIDTH) * QRandomGenerator::global()->generateDouble();
         qreal y = static_cast<qreal>(GameConstants::World::MAP_HEIGHT) * QRandomGenerator::global()->generateDouble();
         food->setPos(x, y);
@@ -223,7 +235,7 @@ void GameScene::spawnHazard()
     effectBalls.append(eb);
 }
 
-void GameScene::spawnAIBall()
+void GameScene::spawnAIBall(int aiId)
 {
     QColor color(QRandomGenerator::global()->bounded(256),
                  QRandomGenerator::global()->bounded(256),
@@ -232,7 +244,8 @@ void GameScene::spawnAIBall()
     int aiLevel = 1 + QRandomGenerator::global()->bounded(3);
 
     auto* ai = new Ball(M_PI * radius * radius, color, false, aiLevel);
-    ai->aiId = m_nextAiId++;
+    ai->aiId = (aiId > 0) ? aiId : m_nextAiId++;
+    m_nextAiId = qMax(m_nextAiId, ai->aiId + 1);
     ai->effect = EffectType::Shield;
     ai->effectTimer = 3.0f;
     qreal x = static_cast<qreal>(GameConstants::World::MAP_WIDTH) * QRandomGenerator::global()->generateDouble();
