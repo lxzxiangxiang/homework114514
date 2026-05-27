@@ -209,11 +209,20 @@ void GameView::drawForeground(QPainter* painter, const QRectF& rect)
 // 开始游戏：重建场景和 UI，进入 Playing 状态
 void GameView::startGame()
 {
-    // 清理旧场景
     for (Ball* ai : m_gameScene->aiBalls) {
         AIController::resetState(ai);
     }
     setScene(nullptr);
+
+    m_pauseOverlay    = nullptr;
+    m_gameOverOverlay = nullptr;
+    m_gameOverText    = nullptr;
+    m_victoryOverlay  = nullptr;
+    m_victoryText     = nullptr;
+    m_menuBackground  = nullptr;
+    m_menuTitle       = nullptr;
+    m_menuHint        = nullptr;
+
     delete m_gameScene;
     m_gameScene = nullptr;
 

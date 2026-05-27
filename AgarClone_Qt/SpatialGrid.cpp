@@ -41,7 +41,7 @@ QList<Entity*> SpatialGrid::getNearby(qreal x, qreal y, qreal radius) const
     int cx = static_cast<int>(x) / CELL_SIZE;
     int cy = static_cast<int>(y) / CELL_SIZE;
 
-    qreal searchRadius = radius * 2;
+    qreal searchRadius = qMax(radius * 2, static_cast<qreal>(CELL_SIZE) * 1.5);
     qreal searchRadiusSq = searchRadius * searchRadius;
 
     int range = static_cast<int>(std::ceil(searchRadius / CELL_SIZE));
