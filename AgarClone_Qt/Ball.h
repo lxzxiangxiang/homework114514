@@ -11,7 +11,7 @@ public:
     Ball* split(QPointF direction);
     class EjectBall* eject();
     void eat(Entity* target);
-    void applyEffect(EffectType effect);
+    void applyEffect(EffectType effect, const QList<Ball*>& allBalls);
     bool hasShield() const;
 
     void update(qreal dt) override;

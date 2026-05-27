@@ -96,7 +96,7 @@ void Ball::eat(Entity* target)
     target->onEaten(this);
 }
 
-void Ball::applyEffect(EffectType et)
+void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
 {
     switch (et) {
     case EffectType::Speed:
@@ -128,6 +128,14 @@ void Ball::applyEffect(EffectType et)
     default: return;
     }
     effect = et;
+
+    for (Ball* other : allBalls) {
+        if (other != this && other->aiId == aiId && aiId > 0 && other->isAlive()) {
+            other->effect = effect;
+            other->effectTimer = effectTimer;
+            other->growOriginalMass = growOriginalMass;
+        }
+    }
 }
 
 bool Ball::hasShield() const

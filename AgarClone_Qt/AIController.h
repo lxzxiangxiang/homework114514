@@ -16,6 +16,7 @@ public:
     };
 
     static void updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt);
+    static QPointF getLastDirection(Ball* ai);
     static void resetState(Ball* ai);
 
 private:
