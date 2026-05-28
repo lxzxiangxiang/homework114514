@@ -8,6 +8,7 @@
 
 #include <QApplication>
 #include <QPainter>
+#include <QPixmap>
 #include <QtMath>
 
 GameView::GameView(QWidget* parent)
@@ -132,8 +133,11 @@ void GameView::keyPressEvent(QKeyEvent* event)
         // 游戏中：ESC 暂停；WASD/Space/E 记录按键
         if (key == Qt::Key_Escape) {
             pauseGame();
-        } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D
-                   || key == Qt::Key_Space) {
+        } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D) {
+            m_keysPressed.insert(key);
+        }
+        if (key == Qt::Key_Space && !event->isAutoRepeat()) {
+            m_splitRequested = true;
             m_keysPressed.insert(key);
         }
         break;
@@ -171,6 +175,24 @@ void GameView::keyReleaseEvent(QKeyEvent* event)
 void GameView::wheelEvent(QWheelEvent* event)
 {
     Q_UNUSED(event);
+}
+
+void GameView::drawBackground(QPainter* painter, const QRectF& rect)
+{
+    painter->save();
+    painter->setBrush(QColor(30, 30, 30));
+    painter->drawRect(rect);
+
+    static bool loaded = false;
+    static QPixmap bg;
+    if (!loaded) {
+        bg.load(":/assets/backgrounds/grid.png");
+        loaded = true;
+    }
+    if (!bg.isNull()) {
+        painter->drawTiledPixmap(sceneRect(), bg);
+    }
+    painter->restore();
 }
 
 void GameView::drawForeground(QPainter* painter, const QRectF& rect)
@@ -232,6 +254,7 @@ void GameView::startGame()
 
     resetTransform();
     m_keysPressed.clear();
+    m_splitRequested = false;
     m_state = State::Playing;
     m_gameTimer->start();
 }
@@ -306,8 +329,14 @@ void GameView::updateCamera()
     for (const Ball* ball : balls) {
         if (!ball->isAlive()) continue;
         qreal weight = ball->radius();
-        cx += ball->x() * weight;
-        cy += ball->y() * weight;
+        if (ball->isInSplitAnim()) {
+            QPointF tp = ball->splitTargetPos();
+            cx += tp.x() * weight;
+            cy += tp.y() * weight;
+        } else {
+            cx += ball->x() * weight;
+            cy += ball->y() * weight;
+        }
         totalWeight += weight;
     }
 
@@ -361,13 +390,10 @@ void GameView::processPlayerInput()
 
     m_gameScene->playerInputDirection = QPointF(dx, dy);
 
-    bool spaceDown = m_keysPressed.contains(Qt::Key_Space);
-
-    if (spaceDown && !m_splitFired) {
+    if (m_splitRequested) {
         m_gameScene->wantSplit = true;
-        m_splitFired = true;
+        m_splitRequested = false;
     }
-    if (!spaceDown) m_splitFired = false;
 }
 
 void GameView::createMenuItems()

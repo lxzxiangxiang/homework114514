@@ -4,6 +4,13 @@
 #include <QRandomGenerator>
 #include <QtMath>
 
+namespace {
+qreal easeOutCubic(qreal t)
+{
+    return 1 - std::pow(1 - t, 3);
+}
+}
+
 Ball::Ball(qreal mass, QColor color, bool isPlayer, int aiLevel)
     : Entity(mass, color)
     , isPlayer(isPlayer)
@@ -59,7 +66,13 @@ void Ball::move(qreal dx, qreal dy, qreal dt)
     qreal r = radius();
     nx = qBound(r, nx, static_cast<qreal>(GameConstants::World::MAP_WIDTH) - r);
     ny = qBound(r, ny, static_cast<qreal>(GameConstants::World::MAP_HEIGHT) - r);
-    setPos(nx, ny);
+    if (m_splitAnim.active) {
+        QPointF movement(dx * s * dt, dy * s * dt);
+        m_splitAnim.startPos += movement;
+        m_splitAnim.targetPos += movement;
+    } else {
+        setPos(nx, ny);
+    }
 }
 
 Ball* Ball::split(QPointF direction)
@@ -67,23 +80,44 @@ Ball* Ball::split(QPointF direction)
     if (radius() < GameConstants::Ball::SPLIT_THRESHOLD) return nullptr;
 
     qreal newMass = m_mass * GameConstants::Ball::SPLIT_MASS_RETAIN;
-    m_mass = newMass;
-    setMass(m_mass);
+    setMass(newMass);
 
     auto* nb = new Ball(newMass, m_color, isPlayer, aiLevel);
     nb->aiId = aiId;
     nb->m_effects = m_effects;
 
+    for (auto& ae : m_effects) {
+        if (ae.type == EffectType::Grow && ae.growOriginalMass > 0)
+            ae.growOriginalMass *= 0.5;
+    }
+    for (auto& ae : nb->m_effects) {
+        if (ae.type == EffectType::Grow && ae.growOriginalMass > 0)
+            ae.growOriginalMass *= 0.5;
+    }
+
     QPointF dir = splitDir(direction, lastDx, lastDy);
     qreal jitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.4;
     qreal offset = (nb->radius() * 2.0 + 30.0) * jitter;
-    nb->setPos(pos() + dir * offset);
+
+    QPointF edgePos = pos() + dir * radius();
+
+    nb->setPos(edgePos);
+    nb->m_splitAnim.active = true;
+    nb->m_splitAnim.startPos = edgePos;
+    nb->m_splitAnim.targetPos = pos() + dir * offset;
+    nb->m_splitAnim.progress = 0.0;
+    nb->m_splitAnim.duration = GameConstants::Physics::SPLIT_ANIM_DURATION;
+
+    m_mergeTimer = 0;
+    nb->m_mergeTimer = 0;
+
     return nb;
 }
 
 void Ball::eat(Entity* target)
 {
     m_mass += target->mass();
+    setMass(m_mass);
     target->onEaten(this);
 }
 
@@ -127,13 +161,14 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
         bool sameGroup = (aiId > 0 && other->aiId == aiId) || (isPlayer && other->isPlayer);
         if (!sameGroup) continue;
 
-        if (et == EffectType::Grow) {
-            other->m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
-        }
         ActiveEffect oae;
         oae.type = et;
         oae.timer = timer;
         oae.growOriginalMass = (et == EffectType::Grow) ? other->m_mass : 0;
+
+        if (et == EffectType::Grow) {
+            other->m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
+        }
         other->m_effects.append(oae);
     }
 }
@@ -163,6 +198,19 @@ bool Ball::hasEffect(EffectType t) const
 
 void Ball::update(qreal dt)
 {
+    m_mergeTimer += dt;
+
+    if (m_splitAnim.active) {
+        m_splitAnim.progress += dt / m_splitAnim.duration;
+        if (m_splitAnim.progress >= 1.0) {
+            m_splitAnim.active = false;
+            setPos(m_splitAnim.targetPos);
+        } else {
+            qreal t = easeOutCubic(m_splitAnim.progress);
+            setPos(m_splitAnim.startPos + (m_splitAnim.targetPos - m_splitAnim.startPos) * t);
+        }
+    }
+
     for (int i = m_effects.size() - 1; i >= 0; --i) {
         ActiveEffect& ae = m_effects[i];
         ae.timer -= dt;
@@ -193,6 +241,13 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     Q_UNUSED(option); Q_UNUSED(widget);
     if (!isAlive()) return;
     painter->setRenderHint(QPainter::Antialiasing);
+
+    if (m_splitAnim.active && m_splitAnim.progress < 0.3) {
+        qreal scale = 0.5 + 0.5 * (m_splitAnim.progress / 0.3);
+        painter->scale(scale, scale);
+        qreal r = radius();
+        painter->translate(-r * (1.0 - scale), -r * (1.0 - scale));
+    }
 
     qreal r = radius();
     QColor drawColor = m_color;

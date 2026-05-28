@@ -10,6 +10,8 @@
 #include <QRandomGenerator>
 #include <QSet>
 #include <QPainter>
+#include <functional>
+#include <cmath>
 
 GameScene::GameScene(QObject* parent)
     : QGraphicsScene(parent)
@@ -113,6 +115,7 @@ QList<Ball*> GameScene::buildAllBalls() const
 void GameScene::updateAIBalls(QList<Ball*>& allBalls, qreal dt)
 {
     QSet<int> processedIds;
+    QList<Ball*> newAiBalls;
     for (Ball* ai : aiBalls) {
         if (!ai->isAlive() || processedIds.contains(ai->aiId)) continue;
         processedIds.insert(ai->aiId);
@@ -128,11 +131,12 @@ void GameScene::updateAIBalls(QList<Ball*>& allBalls, qreal dt)
 
         if (ai->pendingSplitBall) {
             addItem(ai->pendingSplitBall);
-            aiBalls.append(ai->pendingSplitBall);
+            newAiBalls.append(ai->pendingSplitBall);
             allBalls.append(ai->pendingSplitBall);
             ai->pendingSplitBall = nullptr;
         }
     }
+    aiBalls.append(newAiBalls);
 }
 
 void GameScene::updateAllTimers(const QList<Ball*>& allBalls, qreal dt)
@@ -291,7 +295,7 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
             Ball* ball2 = dynamic_cast<Ball*>(e);
             if (!ball2 || ball2 == ball1 || !ball2->isAlive()) continue;
             // 避免重复处理（只处理 ball1 < ball2 的组合）
-            if (ball1 > ball2) continue;
+            if (std::less<Ball*>()(ball1, ball2)) continue;
 
             qreal dx = ball1->x() - ball2->x();
             qreal dy = ball1->y() - ball2->y();
@@ -334,14 +338,17 @@ void GameScene::applyAttraction(const QList<Ball*>& allBalls, qreal dt)
             if (!b2->isAlive()) continue;
 
             if (!sameOwner(b1, b2)) continue;
+            if (b1->isInSplitAnim() || b2->isInSplitAnim()) continue;
 
             qreal dx = b2->x() - b1->x();
             qreal dy = b2->y() - b1->y();
             qreal dist = std::sqrt(dx * dx + dy * dy);
             if (dist < 1e-6) continue;
 
-            // 吸引力 = 常数引力 + 距离平方引力
-            qreal attraction = GameConstants::Physics::ATTRACTION_BASE + GameConstants::Physics::ATTRACTION_DIST_FACTOR * dist * dist;
+            // 吸引力 = 常数 + 距离^指数 + 时间²增量
+            qreal attraction = GameConstants::Physics::ATTRACTION_BASE
+                + GameConstants::Physics::ATTRACTION_DIST_FACTOR * std::pow(dist, GameConstants::Physics::ATTRACTION_DIST_EXPONENT)
+                + GameConstants::Physics::ATTRACTION_TIME_FACTOR * std::pow(std::min(b1->mergeTimer(), b2->mergeTimer()), 2.0);
 
             qreal nx = dx / dist;
             qreal ny = dy / dist;

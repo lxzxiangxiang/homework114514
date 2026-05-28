@@ -24,6 +24,7 @@ protected:
     void keyReleaseEvent(QKeyEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
     void drawForeground(QPainter* painter, const QRectF& rect) override;
+    void drawBackground(QPainter* painter, const QRectF& rect) override;
 
 private slots:
     void advanceGame();
@@ -34,7 +35,7 @@ private:
     State m_state = State::Menu;
     QSet<int> m_keysPressed;
     qreal m_currentZoom = 1.5f;
-    bool m_splitFired = false;
+    bool m_splitRequested = false;
 
     QGraphicsRectItem* m_menuBackground = nullptr;
     QGraphicsRectItem* m_pauseOverlay = nullptr;

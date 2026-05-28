@@ -121,10 +121,13 @@ namespace Spawning {
 // Physics
 // ==========================================================================
 namespace Physics {
-    inline constexpr float ATTRACTION_BASE = 15.0f;        // 同源球吸引力基数
-    inline constexpr float ATTRACTION_DIST_FACTOR = 0.0003f; // 距离平方系数
+    inline constexpr float ATTRACTION_BASE = 30.0f;            // 同源球吸引力基数
+    inline constexpr float ATTRACTION_DIST_FACTOR = 0.002f;   // 距离系数
+    inline constexpr float ATTRACTION_DIST_EXPONENT = 2.5f;   // 距离指数
+    inline constexpr float ATTRACTION_TIME_FACTOR = 0.5f;     // 时间增量系数(每秒)
     inline constexpr float MAGNET_RANGE_MULTIPLIER = 4.0f;  // Magnet 技能: 吸引力范围 = r ×4
     inline constexpr float MAGNET_FORCE = 200.0f;           // Magnet 单位力
+    inline constexpr float SPLIT_ANIM_DURATION = 0.25f;     // 分裂缓动动画时长(秒)
 }
 
 // ==========================================================================
@@ -159,8 +162,8 @@ namespace AI {
 // Camera
 // ==========================================================================
 namespace Camera {
-    inline constexpr float ZOOM_MIN  = 0.5f;
-    inline constexpr float ZOOM_MAX  = 3.0f;
+    inline constexpr float ZOOM_MIN  = 0.2f;
+    inline constexpr float ZOOM_MAX  = 2.0f;
     inline constexpr float ZOOM_LERP = 0.15f;
     inline constexpr float CENTER_LERP = 0.2f;
 }
@@ -169,7 +172,7 @@ namespace Camera {
 // Gameplay
 // ==========================================================================
 namespace Gameplay {
-    inline constexpr float VICTORY_TOTAL_RADIUS = 300.0f;
+    inline constexpr float VICTORY_TOTAL_RADIUS = 500.0f;
     inline constexpr int SPLIT_DELAY_MS = 100;  // 分裂防连发
 }
 

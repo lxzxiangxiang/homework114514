@@ -11,6 +11,14 @@ public:
         qreal growOriginalMass = 0;
     };
 
+    struct SplitAnim {
+        bool active = false;
+        qreal progress = 0.0;
+        qreal duration = 0.25;
+        QPointF startPos;
+        QPointF targetPos;
+    };
+
     Ball(qreal mass, QColor color, bool isPlayer, int aiLevel = 0);
 
     void move(qreal dx, qreal dy, qreal dt);
@@ -22,6 +30,9 @@ public:
     bool hasShield() const;
     bool hasEffect(EffectType t) const;
     const QVector<ActiveEffect>& effects() const { return m_effects; }
+    bool isInSplitAnim() const { return m_splitAnim.active; }
+    QPointF splitTargetPos() const { return m_splitAnim.targetPos; }
+    qreal mergeTimer() const { return m_mergeTimer; }
 
     void update(qreal dt) override;
     void onEaten(Entity* eater) override;
@@ -39,4 +50,6 @@ public:
 private:
     void removeEffect(EffectType t);
     QVector<ActiveEffect> m_effects;
+    SplitAnim m_splitAnim;
+    qreal m_mergeTimer = 0;
 };

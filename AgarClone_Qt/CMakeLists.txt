@@ -19,6 +19,7 @@ qt_add_executable(AgarClone
     GameScene.cpp
     GameView.cpp
     AIController.h Ball.h Constants.h EffectBall.h Entity.h Food.h GameScene.h GameView.h ResBall.h SpatialGrid.h
+    resources.qrc
 )
 
 target_include_directories(AgarClone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
