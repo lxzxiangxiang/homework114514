@@ -22,7 +22,7 @@ GameView::GameView(QWidget* parent)
     // 窗口配置
     setWindowTitle(QStringLiteral("球球大乱斗"));
     resize(GameConstants::Window::WIDTH, GameConstants::Window::HEIGHT);
-    setBackgroundBrush(QColor(30, 30, 30));
+    setBackgroundBrush(QColor(0, 0, 0));
 
     // 禁用抗锯齿（提高性能）、隐藏滚动条、全视口更新模式
     setRenderHint(QPainter::Antialiasing, false);
@@ -180,7 +180,7 @@ void GameView::wheelEvent(QWheelEvent* event)
 void GameView::drawBackground(QPainter* painter, const QRectF& rect)
 {
     painter->save();
-    painter->setBrush(QColor(30, 30, 30));
+    painter->setBrush(Qt::black);
     painter->drawRect(rect);
 
     static bool loaded = false;
@@ -357,10 +357,10 @@ void GameView::updateCamera()
         if (ball->isAlive()) totalMass += ball->radius() * ball->radius();
     }
     qreal equivalentRadius = (totalMass > 0) ? std::sqrt(totalMass) : GameConstants::World::MIN_RADIUS;
-    equivalentRadius = qMax(equivalentRadius, GameConstants::World::MIN_RADIUS);
+    equivalentRadius = std::max(equivalentRadius, static_cast<qreal>(GameConstants::World::MIN_RADIUS));
 
     qreal targetZoom = GameConstants::Camera::ZOOM_MAX * (GameConstants::World::MIN_RADIUS / equivalentRadius);
-    targetZoom = qBound(GameConstants::Camera::ZOOM_MIN, targetZoom, GameConstants::Camera::ZOOM_MAX);
+    targetZoom = std::clamp(targetZoom, static_cast<qreal>(GameConstants::Camera::ZOOM_MIN), static_cast<qreal>(GameConstants::Camera::ZOOM_MAX));
     m_currentZoom += (targetZoom - m_currentZoom) * GameConstants::Camera::ZOOM_LERP;
 
     // 4. 应用变换

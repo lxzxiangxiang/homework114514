@@ -19,7 +19,7 @@ void SpatialGrid::remove(Entity* entity)
 {
     int cx = static_cast<int>(entity->pos().x()) / CELL_SIZE;
     int cy = static_cast<int>(entity->pos().y()) / CELL_SIZE;
-    QPair<int, int> key = {cx, cy};
+    std::pair<int, int> key = {cx, cy};
     auto it = m_grid.find(key);
     if (it != m_grid.end()) {
         it.value().removeAll(entity);
@@ -29,26 +29,26 @@ void SpatialGrid::remove(Entity* entity)
     }
 }
 
-QList<Entity*> SpatialGrid::getNearby(Entity* entity) const
+QList<Entity*> SpatialGrid::nearbyEntities(Entity* entity) const
 {
-    return getNearby(entity->pos().x(), entity->pos().y(), entity->radius());
+    return nearbyEntities(entity->pos().x(), entity->pos().y(), entity->radius());
 }
 
-QList<Entity*> SpatialGrid::getNearby(qreal x, qreal y, qreal radius) const
+QList<Entity*> SpatialGrid::nearbyEntities(qreal x, qreal y, qreal radius) const
 {
     QList<Entity*> result;
 
     int cx = static_cast<int>(x) / CELL_SIZE;
     int cy = static_cast<int>(y) / CELL_SIZE;
 
-    qreal searchRadius = qMax(radius * 2, static_cast<qreal>(CELL_SIZE) * 1.5);
+    qreal searchRadius = std::max(radius * 2, static_cast<qreal>(CELL_SIZE) * 1.5);
     qreal searchRadiusSq = searchRadius * searchRadius;
 
     int range = static_cast<int>(std::ceil(searchRadius / CELL_SIZE));
 
     for (int dx = -range; dx <= range; ++dx) {
         for (int dy = -range; dy <= range; ++dy) {
-            QPair<int, int> key = {cx + dx, cy + dy};
+            std::pair<int, int> key = {cx + dx, cy + dy};
             auto it = m_grid.constFind(key);
             if (it != m_grid.constEnd()) {
                 for (Entity* other : it.value()) {

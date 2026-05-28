@@ -59,7 +59,7 @@ namespace Ball {
     inline constexpr float SPLIT_THRESHOLD = 18.0f; // 可分裂的最小半径
     inline constexpr float EJECT_THRESHOLD = 25.0f; // 可吐孢的最小半径
     inline constexpr float SPLIT_MASS_RETAIN = 0.5f; // 分裂保留质量比例
-    inline constexpr float SPLIT_RANDOM_ANGLE = 0.26f; // 分裂方向随机偏差 (±15°)
+    inline constexpr float SPLIT_DIR_JITTER = 0.3f;  // 分裂方向随机偏移 ±30°
 
     // 速度调节
     inline constexpr float SPEED_MULTIPLIER = 1.5f;  // Speed 技能加速
@@ -135,18 +135,18 @@ namespace Physics {
 // ==========================================================================
 namespace AI {
     namespace Level1 {
-        inline constexpr float REACTION_TIME  = 0.5f;
-        inline constexpr float DECISION_TIME  = 0.4f;
+        inline constexpr float REACTION_TIME  = 1.0f;
+        inline constexpr float DECISION_TIME  = 0.8f;
         inline constexpr float TURN_RATE      = 2.0f;
     }
     namespace Level2 {
-        inline constexpr float REACTION_TIME  = 0.3f;
-        inline constexpr float DECISION_TIME  = 0.2f;
+        inline constexpr float REACTION_TIME  = 0.6f;
+        inline constexpr float DECISION_TIME  = 0.4f;
         inline constexpr float TURN_RATE      = 3.0f;
     }
     namespace Level3 {
-        inline constexpr float REACTION_TIME  = 0.15f;
-        inline constexpr float DECISION_TIME  = 0.1f;
+        inline constexpr float REACTION_TIME  = 0.3f;
+        inline constexpr float DECISION_TIME  = 0.2f;
         inline constexpr float TURN_RATE      = 5.0f;
     }
 

@@ -3,7 +3,7 @@
 #include <QHash>
 #include <QVector>
 #include <QList>
-#include <QPair>
+#include <utility>
 
 class Entity;
 class Ball;
@@ -15,9 +15,9 @@ public:
     void clear();
     void add(Entity* entity);
     void remove(Entity* entity);
-    QList<Entity*> getNearby(Entity* entity) const;
-    QList<Entity*> getNearby(qreal x, qreal y, qreal radius) const;
+    QList<Entity*> nearbyEntities(Entity* entity) const;
+    QList<Entity*> nearbyEntities(qreal x, qreal y, qreal radius) const;
 
 private:
-    QHash<QPair<int, int>, QVector<Entity*>> m_grid;
+    QHash<std::pair<int, int>, QVector<Entity*>> m_grid;
 };

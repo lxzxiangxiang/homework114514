@@ -127,10 +127,10 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
             if (sameIdCount < GameConstants::Spawning::MAX_BALLS_PER_AI) {
                 qreal splitDist = (level >= 3) ? 5.0 : 4.0;
             if (hasThreat && length(fleeDirection) < myRadius * 3.0) {
-                ai->pendingSplitBall = ai->split(normalized(fleeDirection));
+                ai->pendingSplitBall = ai->split(state.currentDirection);
             } else if (hasPrey && length(chaseDirection) < myRadius * splitDist
                        && myRadius > bestPreyRadius * 1.5) {
-                ai->pendingSplitBall = ai->split(normalized(chaseDirection));
+                ai->pendingSplitBall = ai->split(state.currentDirection);
             }
             }
         }
@@ -163,14 +163,14 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 
     // 限制单帧最大转向角度
     qreal maxTurn = turnSpeed * dt;
-    angleDiff = qBound(-maxTurn, angleDiff, maxTurn);
+    angleDiff = std::clamp(angleDiff, -maxTurn, maxTurn);
     qreal newAngle = angleCurrent + angleDiff;
 
     // 根据新角度计算方向向量
     state.currentDirection = QPointF(std::cos(newAngle), std::sin(newAngle));
 }
 
-QPointF AIController::getLastDirection(Ball* ai)
+QPointF AIController::lastDirection(Ball* ai)
 {
     if (!ai || !ai->isAlive()) return QPointF(1, 0);
     auto it = s_states.constFind(ai);

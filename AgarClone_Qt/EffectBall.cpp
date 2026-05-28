@@ -79,7 +79,7 @@ void EffectBall::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidg
     int fadeAlpha = 255;
     if (m_lifetime > m_maxLifetime - 5) {
         fadeAlpha = static_cast<int>(255 * (1.0 - (m_lifetime - (m_maxLifetime - 5)) / 5.0));
-        fadeAlpha = std::max(50, fadeAlpha);
+        fadeAlpha = (std::max)(50, fadeAlpha);
     }
 
     // Glow

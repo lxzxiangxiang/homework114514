@@ -122,7 +122,7 @@ void GameScene::updateAIBalls(QList<Ball*>& allBalls, qreal dt)
         ai->pendingSplitBall = nullptr;
         AIController::updateAI(ai, allBalls, dt);
 
-        QPointF dir = AIController::getLastDirection(ai);
+        QPointF dir = AIController::lastDirection(ai);
         for (Ball* b : aiBalls) {
             if (b->isAlive() && b->aiId == ai->aiId) {
                 b->move(dir.x(), dir.y(), dt);
@@ -160,8 +160,8 @@ void GameScene::updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt)
                 qreal force = GameConstants::Physics::MAGNET_FORCE * dt / dist;
                 qreal fx = food->x() + dx * force;
                 qreal fy = food->y() + dy * force;
-                food->setPos(qBound(0.0, fx, (qreal)GameConstants::World::MAP_WIDTH),
-                             qBound(0.0, fy, (qreal)GameConstants::World::MAP_HEIGHT));
+                food->setPos(std::clamp(fx, 0.0, (qreal)GameConstants::World::MAP_WIDTH),
+                             std::clamp(fy, 0.0, (qreal)GameConstants::World::MAP_HEIGHT));
             }
         }
     }
@@ -290,7 +290,7 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
     // 6.5 Ball ↔ Ball 碰撞（同源合并 + 吞食）
     for (Ball* ball1 : allBalls) {
         if (!ball1->isAlive()) continue;
-        QList<Entity*> nearby = m_spatialGrid.getNearby(ball1);
+        QList<Entity*> nearby = m_spatialGrid.nearbyEntities(ball1);
         for (Entity* e : nearby) {
             Ball* ball2 = dynamic_cast<Ball*>(e);
             if (!ball2 || ball2 == ball1 || !ball2->isAlive()) continue;
@@ -300,7 +300,7 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
             qreal dx = ball1->x() - ball2->x();
             qreal dy = ball1->y() - ball2->y();
             qreal distSq = dx * dx + dy * dy;
-            qreal contactDist = qMax(ball1->radius(), ball2->radius());
+            qreal contactDist = std::max(ball1->radius(), ball2->radius());
             if (distSq > contactDist * contactDist) continue;
 
             bool same = sameOwner(ball1, ball2);
@@ -330,34 +330,40 @@ void GameScene::checkCollisions(const QList<Ball*>& allBalls)
 // 同玩家/AI 组的球体之间产生吸引力，随时间增加逐渐靠近合并
 void GameScene::applyAttraction(const QList<Ball*>& allBalls, qreal dt)
 {
-    for (int i = 0; i < allBalls.size(); ++i) {
-        Ball* b1 = allBalls[i];
-        if (!b1->isAlive()) continue;
-        for (int j = i + 1; j < allBalls.size(); ++j) {
-            Ball* b2 = allBalls[j];
-            if (!b2->isAlive()) continue;
+    QHash<int, QList<Ball*>> groups;
+    for (Ball* b : allBalls) {
+        if (!b->isAlive() || b->isInSplitAnim()) continue;
+        if (b->isPlayer)
+            groups[0].append(b);
+        else if (b->aiId > 0)
+            groups[b->aiId].append(b);
+    }
 
-            if (!sameOwner(b1, b2)) continue;
-            if (b1->isInSplitAnim() || b2->isInSplitAnim()) continue;
+    for (auto it = groups.begin(); it != groups.end(); ++it) {
+        const QList<Ball*>& group = it.value();
+        for (int i = 0; i < group.size(); ++i) {
+            Ball* b1 = group[i];
+            for (int j = i + 1; j < group.size(); ++j) {
+                Ball* b2 = group[j];
 
-            qreal dx = b2->x() - b1->x();
-            qreal dy = b2->y() - b1->y();
-            qreal dist = std::sqrt(dx * dx + dy * dy);
-            if (dist < 1e-6) continue;
+                qreal dx = b2->x() - b1->x();
+                qreal dy = b2->y() - b1->y();
+                qreal dist = std::sqrt(dx * dx + dy * dy);
+                if (dist < 1e-6) continue;
 
-            // 吸引力 = 常数 + 距离^指数 + 时间²增量
-            qreal attraction = GameConstants::Physics::ATTRACTION_BASE
-                + GameConstants::Physics::ATTRACTION_DIST_FACTOR * std::pow(dist, GameConstants::Physics::ATTRACTION_DIST_EXPONENT)
-                + GameConstants::Physics::ATTRACTION_TIME_FACTOR * std::pow(std::min(b1->mergeTimer(), b2->mergeTimer()), 2.0);
+                qreal attraction = GameConstants::Physics::ATTRACTION_BASE
+                    + GameConstants::Physics::ATTRACTION_DIST_FACTOR * std::pow(dist, GameConstants::Physics::ATTRACTION_DIST_EXPONENT)
+                    + GameConstants::Physics::ATTRACTION_TIME_FACTOR * std::pow((std::min)(b1->mergeTimer(), b2->mergeTimer()), 2.0);
 
-            qreal nx = dx / dist;
-            qreal ny = dy / dist;
-            qreal moveStep = attraction * dt / 2;
+                qreal nx = dx / dist;
+                qreal ny = dy / dist;
+                qreal moveStep = attraction * dt / 2;
 
-            b1->setPos(qBound(0.0, b1->x() + nx * moveStep, (qreal)GameConstants::World::MAP_WIDTH),
-                       qBound(0.0, b1->y() + ny * moveStep, (qreal)GameConstants::World::MAP_HEIGHT));
-            b2->setPos(qBound(0.0, b2->x() - nx * moveStep, (qreal)GameConstants::World::MAP_WIDTH),
-                       qBound(0.0, b2->y() - ny * moveStep, (qreal)GameConstants::World::MAP_HEIGHT));
+                b1->setPos(std::clamp(b1->x() + nx * moveStep, 0.0, (qreal)GameConstants::World::MAP_WIDTH),
+                           std::clamp(b1->y() + ny * moveStep, 0.0, (qreal)GameConstants::World::MAP_HEIGHT));
+                b2->setPos(std::clamp(b2->x() - nx * moveStep, 0.0, (qreal)GameConstants::World::MAP_WIDTH),
+                           std::clamp(b2->y() - ny * moveStep, 0.0, (qreal)GameConstants::World::MAP_HEIGHT));
+            }
         }
     }
 }
