@@ -1,37 +1,3 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/">
-        <file>assets/backgrounds/grid.png</file>
-        <file>assets/backgrounds/space.png</file>
-        <file>assets/backgrounds/cyber.png</file>
-        <file>assets/backgrounds/grass.png</file>
-        <file>assets/backgrounds/ink.png</file>
-        <file>assets/backgrounds/abstract.png</file>
-        <file>assets/backgrounds/ocean.png</file>
-        <file>assets/backgrounds/lava.png</file>
-        <file>assets/backgrounds/hexagon.png</file>
-        <file>assets/backgrounds/blueprint.png</file>
-        <file>assets/backgrounds/circuit.png</file>
-        <file>assets/backgrounds/plasma.png</file>
-        <file>assets/backgrounds/disco.png</file>
-        <file>assets/backgrounds/hills.png</file>
-        <file>assets/backgrounds/cloud.png</file>
-        <file>assets/backgrounds/cell.png</file>
-        <file>assets/backgrounds/carbon.png</file>
-        <file>assets/backgrounds/voronoi.png</file>
-        <file>assets/backgrounds/moroccan.png</file>
-        <file>assets/backgrounds/ground_oga.jpg</file>
-        <file>assets/backgrounds/rock_cc0.png</file>
-        <file>assets/backgrounds/rock_blue.png</file>
-        <file>assets/backgrounds/y2k_y2k_space.png</file>
-        <file>assets/backgrounds/y2k_y2k_grid.png</file>
-        <file>assets/backgrounds/y2k_y2k_chrome.png</file>
-        <file>assets/backgrounds/y2k_y2k_lava.png</file>
-        <file>assets/backgrounds/y2k_y2k_ice.png</file>
-        <file>assets/backgrounds/y2k_y2k_metal.png</file>
-        <file>assets/backgrounds/y2k_y2k_stone.png</file>
-        <file>assets/backgrounds/y2k_y2k_concrete.png</file>
-        <file>assets/backgrounds/y2k_y2k_gold.png</file>
-        <file>assets/backgrounds/y2k_y2k_silver.png</file>
-    </qresource>
 </RCC>

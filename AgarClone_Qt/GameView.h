@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QSet>
+#include <QStringList>
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 
@@ -66,4 +67,10 @@ private:
     void returnToMenu();
     void updateCamera();
     void processPlayerInput();
+
+    void scanBackgroundFolder();
+    void selectRandomBackground();
+
+    QStringList m_backgroundFiles;
+    int m_currentBgIndex = -1;
 };

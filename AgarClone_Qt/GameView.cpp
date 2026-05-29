@@ -10,6 +10,9 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QtMath>
+#include <QDir>
+#include <QFileInfo>
+#include <QRandomGenerator>
 
 GameView::GameView(QWidget* parent)
     : QGraphicsView(parent)
@@ -37,6 +40,9 @@ GameView::GameView(QWidget* parent)
 
     // 初始显示主菜单
     returnToMenu();
+
+    scanBackgroundFolder();
+    selectRandomBackground();
 }
 
 GameView::~GameView()
@@ -183,11 +189,13 @@ void GameView::drawBackground(QPainter* painter, const QRectF& rect)
     painter->setBrush(Qt::black);
     painter->drawRect(rect);
 
-    static bool loaded = false;
     static QPixmap bg;
-    if (!loaded) {
-        bg.load(":/assets/backgrounds/grid.png");
-        loaded = true;
+    static bool initialized = false;
+    if (!initialized) {
+        initialized = true;
+        if (m_currentBgIndex >= 0 && m_currentBgIndex < m_backgroundFiles.size()) {
+            bg.load(m_backgroundFiles.at(m_currentBgIndex));
+        }
     }
     if (!bg.isNull()) {
         painter->drawTiledPixmap(sceneRect(), bg);
@@ -551,4 +559,42 @@ void GameView::updateHUD(qreal score, qreal survivalTime, qreal totalMass,
     m_gameScene->hudAICountText = QStringLiteral("AI: %1").arg(aiCount);
     m_gameScene->hudEffectsText = QStringLiteral("效果: ") + effects;
     m_gameScene->hudSplitText   = canSplit ? QStringLiteral("分裂: 可") : QStringLiteral("分裂: 不可");
+}
+
+void GameView::scanBackgroundFolder()
+{
+    m_backgroundFiles.clear();
+
+    QStringList searchPaths;
+    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/assets/backgrounds/");
+    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../AgarClone_Qt/assets/backgrounds/");
+    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../../AgarClone_Qt/assets/backgrounds/");
+
+    QString bgDirPath;
+    for (const auto& path : searchPaths) {
+        QDir testDir(path);
+        if (testDir.exists()) {
+            bgDirPath = path;
+            break;
+        }
+    }
+
+    if (bgDirPath.isEmpty()) return;
+
+    QDir dir(bgDirPath);
+    QStringList filters = {QStringLiteral("*.png"), QStringLiteral("*.jpg"), QStringLiteral("*.jpeg"), QStringLiteral("*.bmp")};
+    QFileInfoList files = dir.entryInfoList(filters, QDir::Files, QDir::Name);
+
+    for (const auto& fi : files) {
+        m_backgroundFiles << fi.absoluteFilePath();
+    }
+}
+
+void GameView::selectRandomBackground()
+{
+    if (m_backgroundFiles.isEmpty()) {
+        m_currentBgIndex = -1;
+        return;
+    }
+    m_currentBgIndex = QRandomGenerator::global()->bounded(m_backgroundFiles.size());
 }

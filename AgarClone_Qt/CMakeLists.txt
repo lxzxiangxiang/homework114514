@@ -8,6 +8,8 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()
 
+set(CMAKE_AUTORCC ON)
+
 qt_add_executable(AgarClone
     MACOSX_BUNDLE
     main.cpp
@@ -21,6 +23,8 @@ qt_add_executable(AgarClone
     AIController.h Ball.h Constants.h EffectBall.h Entity.h Food.h GameScene.h GameView.h ResBall.h SpatialGrid.h
     resources.qrc
 )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 target_include_directories(AgarClone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
