@@ -23,6 +23,8 @@ ui_*.h
 *.autogen/
 .qtc_clangd/
 .qtcreator/
+scripts/
+tools/
 Debug/
 Release/
 Profile/
