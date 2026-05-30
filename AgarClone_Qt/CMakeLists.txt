@@ -4,7 +4,7 @@ project(AgarClone LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Multimedia)
 
 qt_standard_project_setup()
 
@@ -20,7 +20,11 @@ qt_add_executable(AgarClone
     AIController.cpp
     GameScene.cpp
     GameView.cpp
-    AIController.h Ball.h Constants.h EffectBall.h Entity.h Food.h GameScene.h GameView.h ResBall.h SpatialGrid.h
+    SoundManager.cpp
+    CollisionSystem.cpp
+    CameraController.cpp
+    UIManager.cpp
+    AIController.h Ball.h CameraController.h CollisionSystem.h Constants.h EffectBall.h Entity.h Food.h GameScene.h GameView.h SpatialGrid.h SoundManager.h UIManager.h
     resources.qrc
 )
 
@@ -32,6 +36,7 @@ target_link_libraries(AgarClone
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::Multimedia
 )
 
 install(TARGETS AgarClone

@@ -6,10 +6,12 @@
 #include <QWheelEvent>
 #include <QSet>
 #include <QStringList>
-#include <QGraphicsRectItem>
-#include <QGraphicsTextItem>
+#include <QPixmap>
 
 class GameScene;
+class SoundManager;
+class CameraController;
+class UIManager;
 
 class GameView : public QGraphicsView {
     Q_OBJECT
@@ -35,29 +37,11 @@ private:
     QTimer* m_gameTimer = nullptr;
     State m_state = State::Menu;
     QSet<int> m_keysPressed;
-    qreal m_currentZoom = 1.5f;
     bool m_splitRequested = false;
 
-    QGraphicsRectItem* m_menuBackground = nullptr;
-    QGraphicsRectItem* m_pauseOverlay = nullptr;
-    QGraphicsTextItem* m_menuTitle = nullptr;
-    QGraphicsTextItem* m_menuHint = nullptr;
-    QGraphicsTextItem* m_gameOverText = nullptr;
-    QGraphicsTextItem* m_victoryText = nullptr;
-    QGraphicsRectItem* m_gameOverOverlay = nullptr;
-    QGraphicsRectItem* m_victoryOverlay = nullptr;
-
-    void createMenuItems();
-    void showMenu();
-    void showPause();
-    void showGameOver(int score, int survivalTime);
-    void showVictory(int score, int survivalTime);
-    void hideAllUI();
-    void updateHUD(qreal score, qreal survivalTime, qreal totalMass,
-                   int aiCount, const QString& effects, bool canSplit);
-    void showResultOverlay(QGraphicsRectItem*& overlay, QGraphicsTextItem*& titleItem,
-                           const QString& titleText, const QColor& titleColor,
-                           int score, int survivalTime);
+    CameraController* m_camera = nullptr;
+    UIManager* m_ui = nullptr;
+    SoundManager* m_soundManager = nullptr;
 
     void startGame();
     void pauseGame();
@@ -65,12 +49,18 @@ private:
     void gameOver();
     void victory();
     void returnToMenu();
-    void updateCamera();
     void processPlayerInput();
 
     void scanBackgroundFolder();
     void selectRandomBackground();
 
+    void initSoundManager();
+    void connectSplitSignal();
+
     QStringList m_backgroundFiles;
     int m_currentBgIndex = -1;
+    QPixmap m_bgPixmap;
+    bool m_bgLoaded = false;
+
+    QPixmap m_menuBgPixmap;
 };

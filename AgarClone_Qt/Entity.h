@@ -26,6 +26,7 @@ public:
     qreal radius() const { return std::sqrt(m_mass / M_PI); }
     qreal mass() const { return m_mass; }
     void setMass(qreal mass) {
+        Q_ASSERT(mass >= 0);
         if (mass < 0) mass = 0;
         m_mass = mass;
         qreal r = radius();

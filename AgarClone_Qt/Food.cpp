@@ -5,7 +5,7 @@
 #include <QRandomGenerator>
 
 Food::Food(qreal radius)
-    : ResBall([&]() { qreal r = radius < 0 ? QRandomGenerator::global()->bounded(3, 9) : radius; return M_PI * r * r; }(),
+    : Entity([&]() { qreal r = radius < 0 ? QRandomGenerator::global()->bounded(3, 9) : radius; return M_PI * r * r; }(),
              QColor(QRandomGenerator::global()->bounded(256),
                     QRandomGenerator::global()->bounded(256),
                     QRandomGenerator::global()->bounded(256)))

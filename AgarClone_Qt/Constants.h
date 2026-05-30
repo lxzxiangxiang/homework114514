@@ -57,7 +57,6 @@ namespace Ball {
     inline constexpr float BASE_SPEED = 300.0f;   // 公式: speed = BASE × √(MIN_RADIUS / radius())
     inline constexpr float EAT_RATIO = 1.1f;      // 公式: r_eater > r_prey × 1.1 才可吞食
     inline constexpr float SPLIT_THRESHOLD = 18.0f; // 可分裂的最小半径
-    inline constexpr float EJECT_THRESHOLD = 25.0f; // 可吐孢的最小半径
     inline constexpr float SPLIT_MASS_RETAIN = 0.5f; // 分裂保留质量比例
     inline constexpr float SPLIT_DIR_JITTER = 0.3f;  // 分裂方向随机偏移 ±30°
 
@@ -135,17 +134,14 @@ namespace Physics {
 // ==========================================================================
 namespace AI {
     namespace Level1 {
-        inline constexpr float REACTION_TIME  = 1.0f;
         inline constexpr float DECISION_TIME  = 0.8f;
         inline constexpr float TURN_RATE      = 2.0f;
     }
     namespace Level2 {
-        inline constexpr float REACTION_TIME  = 0.6f;
         inline constexpr float DECISION_TIME  = 0.4f;
         inline constexpr float TURN_RATE      = 3.0f;
     }
     namespace Level3 {
-        inline constexpr float REACTION_TIME  = 0.3f;
         inline constexpr float DECISION_TIME  = 0.2f;
         inline constexpr float TURN_RATE      = 5.0f;
     }
@@ -154,15 +150,13 @@ namespace AI {
     inline constexpr float SPLIT_DIST_NORMAL  = 4.0f;
     inline constexpr float SPLIT_DIST_AGGRESSIVE = 5.0f;
     inline constexpr float PREY_VALUE_MULTIPLIER = 0.9f;
-    inline constexpr float TARGET_SKIP_CORNER_RANGE = 8;
-    inline constexpr float PREY_MIN_CORNER_DIST = 3;
 }
 
 // ==========================================================================
 // Camera
 // ==========================================================================
 namespace Camera {
-    inline constexpr float ZOOM_MIN  = 0.2f;
+    inline constexpr float ZOOM_MIN  = 0.26f;
     inline constexpr float ZOOM_MAX  = 2.0f;
     inline constexpr float ZOOM_LERP = 0.15f;
     inline constexpr float CENTER_LERP = 0.2f;

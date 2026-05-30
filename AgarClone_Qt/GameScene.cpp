@@ -4,13 +4,13 @@
 #include "Ball.h"
 #include "Food.h"
 #include "EffectBall.h"
+#include "CollisionSystem.h"
 #include "AIController.h"
 #include "Constants.h"
 
 #include <QRandomGenerator>
 #include <QSet>
 #include <QPainter>
-#include <functional>
 #include <cmath>
 
 GameScene::GameScene(QObject* parent)
@@ -19,7 +19,9 @@ GameScene::GameScene(QObject* parent)
     setSceneRect(0, 0, GameConstants::World::MAP_WIDTH, GameConstants::World::MAP_HEIGHT);
     setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    spawnFood(200);
+    m_collision = new CollisionSystem(this, m_spatialGrid, playerBalls, aiBalls, foods, effectBalls, score);
+
+    spawnFood(GameConstants::Spawning::MAX_FOOD);
 
     for (int i = 0; i < GameConstants::Spawning::AIBALL_COUNT; ++i) {
         spawnAIBall();
@@ -32,6 +34,11 @@ GameScene::GameScene(QObject* parent)
     playerBalls.append(player);
 }
 
+GameScene::~GameScene()
+{
+    delete m_collision;
+}
+
 // ===== 主游戏循环：每 16ms 执行一次 =====
 void GameScene::updateGame(qreal dt)
 {
@@ -39,6 +46,18 @@ void GameScene::updateGame(qreal dt)
     processSplitEject();
 
     QList<Ball*> allBalls = buildAllBalls();
+
+    if (m_firstFrame) {
+        m_firstFrame = false;
+        updateAllTimers(allBalls, dt);
+        m_spatialGrid.clear();
+        for (Ball* b : allBalls) {
+            if (b->isAlive()) m_spatialGrid.add(b);
+        }
+        m_collision->applyAttraction(allBalls, dt);
+        return;
+    }
+
     updateAIBalls(allBalls, dt);
     updateAllTimers(allBalls, dt);
     updateMagnetEffect(allBalls, dt);
@@ -58,8 +77,8 @@ void GameScene::updateGame(qreal dt)
         m_hazardSpawnTimer = 3.0f + QRandomGenerator::global()->bounded(3.0);
     }
 
-    applyAttraction(allBalls, dt);
-    checkCollisions(allBalls);
+    m_collision->applyAttraction(allBalls, dt);
+    m_collision->checkCollisions(allBalls);
     removeDeadEntities();
 
     int foodCount = foods.size();
@@ -96,6 +115,7 @@ void GameScene::processSplitEject()
                 Ball* newBall = ball->split(playerInputDirection);
                 if (newBall) {
                     addPlayerBall(newBall);
+                    emit splitOccurred();
                 }
             }
         }
@@ -174,12 +194,6 @@ void GameScene::updateProjectiles(qreal dt)
     }
 }
 
-bool GameScene::sameOwner(const Ball* a, const Ball* b)
-{
-    return (a->isPlayer && b->isPlayer)
-        || (a->aiId > 0 && a->aiId == b->aiId);
-}
-
 // 在地图随机位置生成指定数量的豆子
 void GameScene::spawnFood(int count)
 {
@@ -244,128 +258,6 @@ void GameScene::addPlayerBall(Ball* ball)
 {
     addItem(ball);
     playerBalls.append(ball);
-}
-
-// ===== 碰撞检测 =====
-// 使用空间网格优化，按顺序处理 5 种碰撞
-// 碰撞判定：圆心距离 ≤ 半径之和，使用平方距离避免开方
-void GameScene::checkCollisions(const QList<Ball*>& allBalls)
-{
-    // 构建空间网格（粗筛阶段）
-    m_spatialGrid.clear();
-    for (Ball* b : allBalls) {
-        if (b->isAlive()) m_spatialGrid.add(b);
-    }
-
-    // 单次遍历处理 3 种实体碰撞（Food/SkillBall/Hazard）
-    for (Ball* ball : allBalls) {
-        if (!ball->isAlive()) continue;
-        bool hasShield = ball->hasShield();
-
-        for (Food* food : foods) {
-            if (!food->isAlive()) continue;
-            qreal dx = ball->x() - food->x();
-            qreal dy = ball->y() - food->y();
-            qreal distSq = dx * dx + dy * dy;
-            qreal contactDist = ball->radius() + food->radius();
-            if (distSq > contactDist * contactDist) continue;
-            if (ball->radius() > food->radius() * GameConstants::Ball::EAT_RATIO) {
-                ball->eat(food);
-                if (ball->isPlayer) score += 1;
-            }
-        }
-
-        for (EffectBall* eb : effectBalls) {
-            if (!eb->isAlive()) continue;
-            qreal dx = ball->x() - eb->x();
-            qreal dy = ball->y() - eb->y();
-            qreal distSq = dx * dx + dy * dy;
-            qreal contactDist = ball->radius() + eb->radius();
-            if (distSq > contactDist * contactDist) continue;
-            ball->applyEffect(eb->effectType(), allBalls);
-            eb->onEaten(ball);
-        }
-    }
-
-    // 6.5 Ball ↔ Ball 碰撞（同源合并 + 吞食）
-    for (Ball* ball1 : allBalls) {
-        if (!ball1->isAlive()) continue;
-        QList<Entity*> nearby = m_spatialGrid.nearbyEntities(ball1);
-        for (Entity* e : nearby) {
-            Ball* ball2 = dynamic_cast<Ball*>(e);
-            if (!ball2 || ball2 == ball1 || !ball2->isAlive()) continue;
-            // 避免重复处理（只处理 ball1 < ball2 的组合）
-            if (std::less<Ball*>()(ball1, ball2)) continue;
-
-            qreal dx = ball1->x() - ball2->x();
-            qreal dy = ball1->y() - ball2->y();
-            qreal distSq = dx * dx + dy * dy;
-            qreal contactDist = std::max(ball1->radius(), ball2->radius());
-            if (distSq > contactDist * contactDist) continue;
-
-            bool same = sameOwner(ball1, ball2);
-
-            if (same) {
-                if (ball1->radius() >= ball2->radius()) {
-                    ball1->eat(ball2);
-                } else {
-                    ball2->eat(ball1);
-                    break;
-                }
-            } else {
-                if (ball1->radius() > ball2->radius() * GameConstants::Ball::EAT_RATIO && !ball2->hasShield()) {
-                    ball1->eat(ball2);
-                    if (ball1->isPlayer) score += ball2->radius() * 0.5;
-                } else if (ball2->radius() > ball1->radius() * GameConstants::Ball::EAT_RATIO && !ball1->hasShield()) {
-                    ball2->eat(ball1);
-                    if (ball2->isPlayer) score += ball1->radius() * 0.5;
-                    break;
-                }
-            }
-        }
-    }
-}
-
-// ===== 同源球体吸引力 =====
-// 同玩家/AI 组的球体之间产生吸引力，随时间增加逐渐靠近合并
-void GameScene::applyAttraction(const QList<Ball*>& allBalls, qreal dt)
-{
-    QHash<int, QList<Ball*>> groups;
-    for (Ball* b : allBalls) {
-        if (!b->isAlive() || b->isInSplitAnim()) continue;
-        if (b->isPlayer)
-            groups[0].append(b);
-        else if (b->aiId > 0)
-            groups[b->aiId].append(b);
-    }
-
-    for (auto it = groups.begin(); it != groups.end(); ++it) {
-        const QList<Ball*>& group = it.value();
-        for (int i = 0; i < group.size(); ++i) {
-            Ball* b1 = group[i];
-            for (int j = i + 1; j < group.size(); ++j) {
-                Ball* b2 = group[j];
-
-                qreal dx = b2->x() - b1->x();
-                qreal dy = b2->y() - b1->y();
-                qreal dist = std::sqrt(dx * dx + dy * dy);
-                if (dist < 1e-6) continue;
-
-                qreal attraction = GameConstants::Physics::ATTRACTION_BASE
-                    + GameConstants::Physics::ATTRACTION_DIST_FACTOR * std::pow(dist, GameConstants::Physics::ATTRACTION_DIST_EXPONENT)
-                    + GameConstants::Physics::ATTRACTION_TIME_FACTOR * std::pow((std::min)(b1->mergeTimer(), b2->mergeTimer()), 2.0);
-
-                qreal nx = dx / dist;
-                qreal ny = dy / dist;
-                qreal moveStep = attraction * dt / 2;
-
-                b1->setPos(std::clamp(b1->x() + nx * moveStep, 0.0, (qreal)GameConstants::World::MAP_WIDTH),
-                           std::clamp(b1->y() + ny * moveStep, 0.0, (qreal)GameConstants::World::MAP_HEIGHT));
-                b2->setPos(std::clamp(b2->x() - nx * moveStep, 0.0, (qreal)GameConstants::World::MAP_WIDTH),
-                           std::clamp(b2->y() - ny * moveStep, 0.0, (qreal)GameConstants::World::MAP_HEIGHT));
-            }
-        }
-    }
 }
 
 // 从所有实体列表中移除已死亡实体并释放内存

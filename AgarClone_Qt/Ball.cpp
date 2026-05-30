@@ -32,7 +32,7 @@ void Ball::removeEffect(EffectType t)
 qreal Ball::speed() const
 {
     qreal r = radius();
-    qreal safeR = std::max(r, static_cast<qreal>(GameConstants::World::MIN_RADIUS));
+    qreal safeR = (std::max)(r, static_cast<qreal>(GameConstants::World::MIN_RADIUS));
     qreal base = GameConstants::Ball::BASE_SPEED * std::sqrt(GameConstants::World::MIN_RADIUS / safeR);
     if (hasEffect(EffectType::Speed))
         base *= GameConstants::Ball::SPEED_MULTIPLIER;
@@ -224,7 +224,7 @@ void Ball::update(qreal dt)
             m_effects.removeAt(i);
         } else if (ae.type == EffectType::Poison) {
             qreal r = radius();
-            qreal newR = std::max(r - GameConstants::Ball::Poison::RADIUS_PER_SEC * dt, 1.0);
+            qreal newR = (std::max)(r - GameConstants::Ball::Poison::RADIUS_PER_SEC * dt, 1.0);
             m_mass = M_PI * newR * newR;
         }
     }
@@ -259,9 +259,9 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
         }
         qreal flash = std::abs(std::sin(shieldTimer * 10.0));
         drawColor = QColor(
-            std::min(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
-            std::min(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
-            std::min(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
+            (std::min)(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
+            (std::min)(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
+            (std::min)(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
         qreal glowR = r * 1.3;
         painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(shieldTimer * 5.0)));
         painter->setPen(Qt::NoPen);

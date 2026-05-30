@@ -4,6 +4,7 @@
 
 class EffectBall : public Entity {
 public:
+    Q_DISABLE_COPY_MOVE(EffectBall)
     EffectBall(QPointF pos, EffectType type);
 
     EffectType effectType() const { return m_type; }

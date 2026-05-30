@@ -5,6 +5,7 @@
 
 class Ball : public Entity {
 public:
+    Q_DISABLE_COPY_MOVE(Ball)
     struct ActiveEffect {
         EffectType type;
         qreal timer;

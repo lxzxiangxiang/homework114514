@@ -69,7 +69,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
                 continue;
             QPointF delta = other->pos() - myPos;
             qreal dist = length(delta);
-            if (dist > myRadius * 6.0)
+            if (dist > myRadius * GameConstants::AI::THREAT_RANGE_MULTIPLIER)
                 continue;                                   // 超出威胁感知范围
             hasThreat = true;
             fleeDirection -= delta;                         // 多个威胁矢量叠加
@@ -86,7 +86,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
             if (other == ai || !other->isAlive())
                 continue;
             if (other->hasEffect(EffectType::Invisible)) continue;
-            if (other->radius() >= myRadius * 0.9)
+            if (other->radius() >= myRadius * GameConstants::AI::PREY_VALUE_MULTIPLIER)
                 continue;
             QPointF delta = other->pos() - myPos;
             qreal dist = length(delta);
@@ -108,8 +108,9 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
             // ===== 巡逻 =====
             // 无威胁无猎物时，随机选择地图内巡逻点移动
             if (state.patrolTarget.isNull() || length(myPos - state.patrolTarget) < myRadius) {
-                qreal rx = QRandomGenerator::global()->generateDouble() * GameConstants::World::MAP_WIDTH;
-                qreal ry = QRandomGenerator::global()->generateDouble() * GameConstants::World::MAP_HEIGHT;
+                const qreal margin = myRadius;
+                qreal rx = margin + QRandomGenerator::global()->generateDouble() * (GameConstants::World::MAP_WIDTH - 2.0 * margin);
+                qreal ry = margin + QRandomGenerator::global()->generateDouble() * (GameConstants::World::MAP_HEIGHT - 2.0 * margin);
                 state.patrolTarget = QPointF(rx, ry);
             }
             state.targetDirection = normalized(state.patrolTarget - myPos);
@@ -125,7 +126,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
                 if (b->isAlive() && b->aiId == ai->aiId) sameIdCount++;
             }
             if (sameIdCount < GameConstants::Spawning::MAX_BALLS_PER_AI) {
-                qreal splitDist = (level >= 3) ? 5.0 : 4.0;
+                qreal splitDist = (level >= 3) ? GameConstants::AI::SPLIT_DIST_AGGRESSIVE : GameConstants::AI::SPLIT_DIST_NORMAL;
             if (hasThreat && length(fleeDirection) < myRadius * 3.0) {
                 ai->pendingSplitBall = ai->split(state.currentDirection);
             } else if (hasPrey && length(chaseDirection) < myRadius * splitDist

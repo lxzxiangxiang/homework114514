@@ -41,7 +41,7 @@ QList<Entity*> SpatialGrid::nearbyEntities(qreal x, qreal y, qreal radius) const
     int cx = static_cast<int>(x) / CELL_SIZE;
     int cy = static_cast<int>(y) / CELL_SIZE;
 
-    qreal searchRadius = std::max(radius * 2, static_cast<qreal>(CELL_SIZE) * 1.5);
+    qreal searchRadius = (std::max)(radius * 2, static_cast<qreal>(CELL_SIZE) * 1.5);
     qreal searchRadiusSq = searchRadius * searchRadius;
 
     int range = static_cast<int>(std::ceil(searchRadius / CELL_SIZE));
@@ -55,9 +55,9 @@ QList<Entity*> SpatialGrid::nearbyEntities(qreal x, qreal y, qreal radius) const
                     if (!other->isAlive()) {
                         continue;
                     }
-                    qreal dx = other->pos().x() - x;
-                    qreal dy = other->pos().y() - y;
-                    qreal distSq = dx * dx + dy * dy;
+                    qreal diffX = other->pos().x() - x;
+                    qreal diffY = other->pos().y() - y;
+                    qreal distSq = diffX * diffX + diffY * diffY;
                     if (distSq <= searchRadiusSq) {
                         result.append(other);
                     }

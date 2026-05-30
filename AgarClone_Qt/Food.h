@@ -1,9 +1,10 @@
 #pragma once
 
-#include "ResBall.h"
+#include "Entity.h"
 
-class Food : public ResBall {
+class Food : public Entity {
 public:
+    Q_DISABLE_COPY_MOVE(Food)
     Food(qreal radius = -1);
 
     void update(qreal dt) override;

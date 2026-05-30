@@ -7,12 +7,14 @@
 class Ball;
 class Food;
 class EffectBall;
+class CollisionSystem;
 
 class GameScene : public QGraphicsScene {
     Q_OBJECT
 
 public:
     explicit GameScene(QObject* parent = nullptr);
+    ~GameScene();
 
     void updateGame(qreal dt);
 
@@ -40,6 +42,9 @@ public:
     QString hudEffectsText;
     QString hudSplitText;
 
+signals:
+    void splitOccurred();
+
 private:
     void movePlayerBalls(qreal dt);
     void processSplitEject();
@@ -48,12 +53,11 @@ private:
     void updateAllTimers(const QList<Ball*>& allBalls, qreal dt);
     void updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt);
     void updateProjectiles(qreal dt);
-    void checkCollisions(const QList<Ball*>& allBalls);
-    void applyAttraction(const QList<Ball*>& allBalls, qreal dt);
     void removeDeadEntities();
-    static bool sameOwner(const Ball* a, const Ball* b);
 
     SpatialGrid m_spatialGrid;
+    CollisionSystem* m_collision = nullptr;
+    bool m_firstFrame = true;
     qreal m_skillSpawnTimer = 0;
     qreal m_hazardSpawnTimer = 0;
     int m_nextAiId = 1;
