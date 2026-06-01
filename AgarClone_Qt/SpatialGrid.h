@@ -13,6 +13,7 @@ public:
     static constexpr int CELL_SIZE = 200;
 
     void clear();
+    void clearAndKeepCapacity();
     void add(Entity* entity);
     void remove(Entity* entity);
     QList<Entity*> nearbyEntities(Entity* entity) const;

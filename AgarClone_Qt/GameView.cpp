@@ -9,36 +9,36 @@
 #include "Constants.h"
 #include "Ball.h"
 
-#include <QApplication>
+
 #include <QPainter>
 #include <QPixmap>
-#include <QtMath>
 #include <QDir>
 #include <QFileInfo>
 #include <QRandomGenerator>
+#include <cmath>
 
 GameView::GameView(QWidget* parent)
     : QGraphicsView(parent)
 {
-    // 创建游戏场景
     m_gameScene = new GameScene(this);
     setScene(m_gameScene);
+
+    setUpdatesEnabled(false);
+    m_gameScene->initEntities();
+    setUpdatesEnabled(true);
 
     m_camera = new CameraController(this, m_gameScene);
     m_ui = new UIManager(m_gameScene, this);
 
-    // 窗口配置
     setWindowTitle(QStringLiteral("球球大乱斗"));
     resize(GameConstants::Window::WIDTH, GameConstants::Window::HEIGHT);
     setBackgroundBrush(QColor(0, 0, 0));
 
-    // 禁用抗锯齿（提高性能）、隐藏滚动条、全视口更新模式
-    setRenderHint(QPainter::Antialiasing, false);
+    setRenderHint(QPainter::Antialiasing, true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-    // 创建游戏主循环计时器（16ms = 约 60 FPS）
     m_gameTimer = new QTimer(this);
     m_gameTimer->setInterval(GameConstants::Loop::FRAME_INTERVAL_MS);
     connect(m_gameTimer, &QTimer::timeout, this, &GameView::advanceGame);
@@ -69,13 +69,14 @@ GameView::GameView(QWidget* parent)
         loadPic(m_victoryBgPixmap,  QStringLiteral("victory.jpg"));
     }
 
-    // 初始显示主菜单
     returnToMenu();
 
     scanBackgroundFolder();
     for (const auto& path : m_backgroundFiles) {
         QPixmap pm;
-        if (pm.load(path)) m_bgCache.insert(path, pm);
+        if (pm.load(path)) {
+            m_bgCache.insert(path, pm);
+        }
     }
     selectRandomBackground();
 
@@ -89,10 +90,6 @@ GameView::~GameView()
     }
     delete m_camera;
     m_camera = nullptr;
-    if (m_preloadedScene) {
-        delete m_preloadedScene;
-        m_preloadedScene = nullptr;
-    }
 }
 
 // ===== 每帧回调：游戏主循环驱动 =====
@@ -180,14 +177,13 @@ void GameView::keyPressEvent(QKeyEvent* event)
 
     switch (m_state) {
     case State::Menu:
-        // 菜单界面：Enter 开始游戏
         if (key == Qt::Key_Return || key == Qt::Key_Enter) {
+            switchToPreloadedScene();
             startGame();
         }
         break;
 
     case State::Playing:
-        // 游戏中：ESC 暂停；WASD/Space/E 记录按键
         if (key == Qt::Key_Escape) {
             pauseGame();
         } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D
@@ -201,7 +197,6 @@ void GameView::keyPressEvent(QKeyEvent* event)
         break;
 
     case State::Paused:
-        // 暂停：ESC 继续；M 回主菜单
         if (key == Qt::Key_Escape) {
             resumeGame();
         } else if (key == Qt::Key_M) {
@@ -211,8 +206,8 @@ void GameView::keyPressEvent(QKeyEvent* event)
 
     case State::GameOver:
     case State::Victory:
-        // 结束/胜利：Enter 重新开始；M 回主菜单
         if (key == Qt::Key_Return || key == Qt::Key_Enter) {
+            switchToPreloadedScene();
             startGame();
         } else if (key == Qt::Key_M) {
             returnToMenu();
@@ -242,7 +237,20 @@ void GameView::drawBackground(QPainter* painter, const QRectF& rect)
     painter->drawRect(rect);
 
     if (!m_bgPixmap.isNull()) {
-        painter->drawTiledPixmap(sceneRect(), m_bgPixmap);
+        QRectF clipRect = painter->clipBoundingRect();
+        if (clipRect.isEmpty()) clipRect = rect;
+        qreal pw = m_bgPixmap.width();
+        qreal ph = m_bgPixmap.height();
+        if (pw <= 0 || ph <= 0) { painter->restore(); return; }
+        qreal startX = std::floor(clipRect.left() / pw) * pw;
+        qreal startY = std::floor(clipRect.top() / ph) * ph;
+        painter->setRenderHint(QPainter::Antialiasing, false);
+        QRectF srcRect = m_bgPixmap.rect();
+        for (qreal x = startX; x < clipRect.right() - 1; x += pw) {
+            for (qreal y = startY; y < clipRect.bottom() - 1; y += ph) {
+                painter->drawPixmap(QRectF(x, y, pw + 1, ph + 1), m_bgPixmap, srcRect);
+            }
+        }
     }
     painter->restore();
 }
@@ -266,24 +274,39 @@ void GameView::drawForeground(QPainter* painter, const QRectF& rect)
         painter->setRenderHint(QPainter::Antialiasing, true);
         QFont font("Arial", GameConstants::HUD::FONT_SIZE);
         painter->setFont(font);
-        painter->setPen(Qt::white);
 
         const int margin = GameConstants::HUD::MARGIN;
         const int lineHeight = GameConstants::HUD::LINE_HEIGHT;
         const int maxWidth = GameConstants::HUD::MAX_WIDTH;
 
+        const QString hudLines[] = {
+            m_gameScene->m_hudScoreText,
+            m_gameScene->m_hudTimeText,
+            m_gameScene->m_hudRadiusText,
+            m_gameScene->m_hudAICountText,
+            m_gameScene->m_hudEffectsText,
+            m_gameScene->m_hudSplitText
+        };
+
         QRectF lineRect(margin, margin, maxWidth, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudScoreText);
-        lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudTimeText);
-        lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudRadiusText);
-        lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudAICountText);
-        lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudEffectsText);
-        lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudSplitText);
+        for (const auto& line : hudLines) {
+            QPainterPath textPath;
+            textPath.addText(lineRect.bottomLeft(), font, line);
+
+            QPainterPathStroker stroker;
+            stroker.setWidth(2.0);
+            QPainterPath outline = stroker.createStroke(textPath);
+
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(Qt::black);
+            painter->drawPath(outline);
+
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(Qt::white);
+            painter->drawPath(textPath);
+
+            lineRect.translate(0, lineHeight);
+        }
     } else if (m_state == State::Paused) {
         const qreal w = width();
         const qreal h = height();
@@ -342,7 +365,6 @@ void GameView::drawForeground(QPainter* painter, const QRectF& rect)
 void GameView::startGame()
 {
     AIController::resetAll();
-    m_ui->clearOverlayRefs();
 
     m_camera->initForStart();
     m_keysPressed.clear();
@@ -354,9 +376,11 @@ void GameView::startGame()
         auto it = m_bgCache.find(path);
         if (it != m_bgCache.end()) {
             m_bgPixmap = it.value();
-        } else if (!m_bgPixmap.load(path)) {
-            qWarning() << "GameView: failed to load background" << path;
-            m_bgPixmap = QPixmap();
+        } else {
+            qWarning() << "GameView: bg not in cache, loading sync:" << path;
+            if (!m_bgPixmap.load(path)) {
+                m_bgPixmap = QPixmap();
+            }
         }
     }
 
@@ -425,26 +449,21 @@ void GameView::returnToMenu()
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
     m_ui->showMenu();
     if (m_soundManager) m_soundManager->playMenuMusic();
-
-    preloadAndSwitchScene();
 }
 
-void GameView::preloadAndSwitchScene()
+void GameView::switchToPreloadedScene()
 {
-    if (!m_preloadedScene) {
-        m_preloadedScene = new GameScene(this);
-
-        setUpdatesEnabled(false);
-        if (m_gameScene && m_gameScene != m_preloadedScene) {
-            m_gameScene->deleteLater();
-        }
-        m_gameScene = m_preloadedScene;
-        m_preloadedScene = nullptr;
-        setScene(m_gameScene);
-        m_ui->setScene(m_gameScene);
-        m_camera->setScene(m_gameScene);
-        setUpdatesEnabled(true);
+    setUpdatesEnabled(false);
+    if (m_gameScene) {
+        m_gameScene->deleteLater();
     }
+    m_gameScene = new GameScene(this);
+    setScene(m_gameScene);
+    m_ui->setScene(m_gameScene);
+    m_camera->setScene(m_gameScene);
+
+    m_gameScene->initEntities();
+    setUpdatesEnabled(true);
 }
 
 void GameView::processPlayerInput()
@@ -474,6 +493,7 @@ void GameView::processPlayerInput()
 void GameView::scanBackgroundFolder()
 {
     m_backgroundFiles.clear();
+    m_backgroundFiles.reserve(16);
 
     QString bgDirPath = findAssetDir({
         QStringLiteral("assets/backgrounds"),

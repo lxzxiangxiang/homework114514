@@ -71,7 +71,6 @@ void EffectBall::onEaten(Entity* eater)
 void EffectBall::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
     if (!isAlive()) return;
-    painter->setRenderHint(QPainter::Antialiasing);
 
     qreal r = radius();
     qreal pulse = 1.0 + 0.2 * std::sin(m_pulseTimer);

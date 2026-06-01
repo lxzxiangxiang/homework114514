@@ -59,7 +59,7 @@ private:
     void initSoundManager();
     void connectSplitSignal();
 
-    void preloadAndSwitchScene();
+    void switchToPreloadedScene();
 
     static QString findAssetDir(const QStringList& relativePaths);
 
@@ -77,5 +77,4 @@ private:
     int m_resultScore = 0;
     int m_resultSurvivalTime = 0;
     bool m_isVictory = false;
-    GameScene* m_preloadedScene = nullptr;
 };

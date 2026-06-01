@@ -2,6 +2,7 @@
 // 实现三级 AI 决策系统：威胁检测→猎物追踪→巡逻→分裂决策，以及平滑转向
 #include "AIController.h"
 #include "Ball.h"
+#include "SpatialGrid.h"
 #include "Constants.h"
 #include <QRandomGenerator>
 #include <cmath>
@@ -25,7 +26,7 @@ static QPointF normalized(const QPointF& vec)
 }
 
 // AI 决策主函数：每帧调用一次，驱动单个 AI 球体的自主行为
-void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
+void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, const SpatialGrid& grid, qreal dt)
 {
     // 空指针或死亡检查
     if (!ai || !ai->isAlive())
@@ -60,7 +61,11 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
         bool hasThreat = false;
         QPointF fleeDirection(0, 0);
 
-        for (Ball* other : allBalls) {
+        QList<Entity*> nearbyEntities;
+        grid.queryNearby(myPos.x(), myPos.y(), myRadius * GameConstants::AI::THREAT_RANGE_MULTIPLIER, nearbyEntities);
+
+        for (Entity* e : nearbyEntities) {
+            Ball* other = static_cast<Ball*>(e);
             if (other == ai || !other->isAlive())
                 continue;
             if (other->hasEffect(EffectType::Invisible))
@@ -70,9 +75,9 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
             QPointF delta = other->pos() - myPos;
             qreal dist = length(delta);
             if (dist > myRadius * GameConstants::AI::THREAT_RANGE_MULTIPLIER)
-                continue;                                   // 超出威胁感知范围
+                continue;
             hasThreat = true;
-            fleeDirection -= delta;                         // 多个威胁矢量叠加
+            fleeDirection -= delta;
         }
 
         // ===== 猎物检测 =====
@@ -82,7 +87,11 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 
         qreal bestPreyScore = 0;
         qreal bestPreyRadius = 0;
-        for (Ball* other : allBalls) {
+        QList<Entity*> preyEntities;
+        grid.queryNearby(myPos.x(), myPos.y(), myRadius * 20.0, preyEntities);
+
+        for (Entity* e : preyEntities) {
+            Ball* other = static_cast<Ball*>(e);
             if (other == ai || !other->isAlive())
                 continue;
             if (other->hasEffect(EffectType::Invisible)) continue;
@@ -90,7 +99,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
                 continue;
             QPointF delta = other->pos() - myPos;
             qreal dist = length(delta);
-            qreal score = other->radius() / (dist + 1.0);   // 价值评分：半径/距离
+            qreal score = other->radius() / (dist + 1.0);
             if (score > bestPreyScore) {
                 bestPreyScore = score;
                 bestPreyRadius = other->radius();

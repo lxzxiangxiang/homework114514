@@ -8,6 +8,13 @@ void SpatialGrid::clear()
     m_grid.clear();
 }
 
+void SpatialGrid::clearAndKeepCapacity()
+{
+    for (auto& vec : m_grid) {
+        vec.clear();
+    }
+}
+
 void SpatialGrid::add(Entity* entity)
 {
     int cx = static_cast<int>(entity->pos().x()) / CELL_SIZE;

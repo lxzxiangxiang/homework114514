@@ -23,15 +23,25 @@ bool CollisionSystem::sameOwner(const Ball* a, const Ball* b)
 
 void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
 {
-    m_spatialGrid.clear();
-    for (Ball* b : allBalls) {
-        if (b->isAlive()) m_spatialGrid.add(b);
+    m_foodGrid.clearAndKeepCapacity();
+    for (Food* f : m_foods) {
+        if (f->isAlive()) m_foodGrid.add(f);
     }
+
+    m_effectGrid.clearAndKeepCapacity();
+    for (EffectBall* eb : m_effectBalls) {
+        if (eb->isAlive()) m_effectGrid.add(eb);
+    }
+
+    QList<Entity*> nearbyCache;
 
     for (Ball* ball : allBalls) {
         if (!ball->isAlive()) continue;
 
-        for (Food* food : m_foods) {
+        nearbyCache.clear();
+        m_foodGrid.queryNearby(ball->pos().x(), ball->pos().y(), ball->radius(), nearbyCache);
+        for (Entity* e : nearbyCache) {
+            Food* food = static_cast<Food*>(e);
             if (!food->isAlive()) continue;
             qreal dx = ball->x() - food->x();
             qreal dy = ball->y() - food->y();
@@ -44,7 +54,10 @@ void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
             }
         }
 
-        for (EffectBall* eb : m_effectBalls) {
+        nearbyCache.clear();
+        m_effectGrid.queryNearby(ball->pos().x(), ball->pos().y(), ball->radius(), nearbyCache);
+        for (Entity* e : nearbyCache) {
+            EffectBall* eb = static_cast<EffectBall*>(e);
             if (!eb->isAlive()) continue;
             qreal dx = ball->x() - eb->x();
             qreal dy = ball->y() - eb->y();
@@ -56,7 +69,6 @@ void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
         }
     }
 
-    QList<Entity*> nearbyCache;
     for (Ball* ball1 : allBalls) {
         if (!ball1->isAlive()) continue;
         nearbyCache.clear();

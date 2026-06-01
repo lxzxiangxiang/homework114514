@@ -18,6 +18,7 @@ public:
     explicit GameScene(QObject* parent = nullptr);
     ~GameScene();
 
+    void initEntities();
     void updateGame(qreal dt);
 
     void spawnFood(int count);
@@ -51,7 +52,6 @@ signals:
 private:
     void movePlayerBalls(qreal dt);
     void processSplitEject();
-    void buildAllBalls();
     void updateAIBalls(QList<Ball*>& allBalls, qreal dt);
     void updateAllTimers(const QList<Ball*>& allBalls, qreal dt);
     void updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt);

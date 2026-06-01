@@ -5,6 +5,7 @@
 #include <QList>
 
 class Ball;
+class SpatialGrid;
 
 class AIController {
 public:
@@ -15,7 +16,7 @@ public:
         QPointF patrolTarget;
     };
 
-    static void updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt);
+    static void updateAI(Ball* ai, const QList<Ball*>& allBalls, const SpatialGrid& grid, qreal dt);
     static QPointF lastDirection(Ball* ai);
     static void resetState(Ball* ai);
     static void resetAll();

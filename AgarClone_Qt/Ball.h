@@ -45,12 +45,14 @@ public:
     int m_aiId;
 
     qreal m_lastDx = 0, m_lastDy = 0;
+    qreal m_shieldFlash[2] = {0, 0};
 
     Ball* m_pendingSplitBall = nullptr;
 
 private:
     void removeEffect(EffectType t);
     QVector<ActiveEffect> m_effects;
+    uint16_t m_effectFlags = 0;
     SplitAnim m_splitAnim;
     qreal m_mergeTimer = 0;
 };

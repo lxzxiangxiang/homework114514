@@ -24,6 +24,11 @@ void Ball::removeEffect(EffectType t)
     for (int i = 0; i < m_effects.size(); ++i) {
         if (m_effects[i].type == t) {
             m_effects.removeAt(i);
+            bool stillHas = false;
+            for (const auto& ae : m_effects) {
+                if (ae.type == t) { stillHas = true; break; }
+            }
+            if (!stillHas) m_effectFlags &= ~(1 << static_cast<int>(t));
             return;
         }
     }
@@ -157,6 +162,7 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
     }
 
     m_effects.append(ae);
+    m_effectFlags |= (1 << static_cast<int>(et));
 
     for (Ball* other : allBalls) {
         if (other == this || !other->isAlive()) continue;
@@ -172,6 +178,7 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
             other->m_mass *= GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
         }
         other->m_effects.append(oae);
+        other->m_effectFlags |= (1 << static_cast<int>(et));
     }
 }
 
@@ -182,6 +189,7 @@ void Ball::addInitialEffect(EffectType t, qreal timer)
     ae.timer = timer;
     if (t == EffectType::Shield) {
         m_effects.append(ae);
+        m_effectFlags |= (1 << static_cast<int>(t));
     }
 }
 
@@ -192,10 +200,7 @@ bool Ball::hasShield() const
 
 bool Ball::hasEffect(EffectType t) const
 {
-    for (const auto& ae : m_effects) {
-        if (ae.type == t) return true;
-    }
-    return false;
+    return m_effectFlags & (1 << static_cast<int>(t));
 }
 
 void Ball::update(qreal dt)
@@ -223,12 +228,27 @@ void Ball::update(qreal dt)
                 if (m_mass > expectedMass) setMass(m_mass / growFactor);
                 else setMass(ae.growOriginalMass);
             }
+            EffectType expiredType = ae.type;
             m_effects.removeAt(i);
+            bool stillHas = false;
+            for (const auto& remaining : m_effects) {
+                if (remaining.type == expiredType) { stillHas = true; break; }
+            }
+            if (!stillHas) m_effectFlags &= ~(1 << static_cast<int>(expiredType));
         } else if (ae.type == EffectType::Poison) {
             qreal r = radius();
             qreal newR = (std::max)(r - GameConstants::Ball::Poison::RADIUS_PER_SEC * dt, 1.0);
             m_mass = M_PI * newR * newR;
         }
+    }
+
+    if (hasEffect(EffectType::Shield)) {
+        qreal shieldTimer = 0;
+        for (const auto& ae : m_effects) {
+            if (ae.type == EffectType::Shield) { shieldTimer = ae.timer; break; }
+        }
+        m_shieldFlash[0] = std::abs(std::sin(shieldTimer * 10.0));
+        m_shieldFlash[1] = qSin(shieldTimer * 5.0);
     }
 }
 
@@ -242,7 +262,6 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
 {
     Q_UNUSED(option); Q_UNUSED(widget);
     if (!isAlive()) return;
-    painter->setRenderHint(QPainter::Antialiasing);
 
     if (m_splitAnim.active && m_splitAnim.progress < 0.3) {
         qreal scale = 0.5 + 0.5 * (m_splitAnim.progress / 0.3);
@@ -255,17 +274,13 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     QColor drawColor = m_color;
 
     if (hasEffect(EffectType::Shield)) {
-        qreal shieldTimer = 0;
-        for (const auto& ae : m_effects) {
-            if (ae.type == EffectType::Shield) { shieldTimer = ae.timer; break; }
-        }
-        qreal flash = std::abs(std::sin(shieldTimer * 10.0));
+        qreal flash = m_shieldFlash[0];
         drawColor = QColor(
             (std::min)(255, static_cast<int>(m_color.red() + (255 - m_color.red()) * flash)),
             (std::min)(255, static_cast<int>(m_color.green() + (255 - m_color.green()) * flash)),
             (std::min)(255, static_cast<int>(m_color.blue() + (255 - m_color.blue()) * flash)));
         qreal glowR = r * 1.3;
-        painter->setBrush(QColor(255, 255, 255, 100 + 50 * qSin(shieldTimer * 5.0)));
+        painter->setBrush(QColor(255, 255, 255, 100 + 50 * m_shieldFlash[1]));
         painter->setPen(Qt::NoPen);
         painter->drawEllipse(QPointF(0, 0), glowR, glowR);
     }

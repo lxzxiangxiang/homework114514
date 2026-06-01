@@ -23,6 +23,8 @@ public:
 
 private:
     SpatialGrid& m_spatialGrid;
+    SpatialGrid m_foodGrid;
+    SpatialGrid m_effectGrid;
     QList<Food*>& m_foods;
     QList<EffectBall*>& m_effectBalls;
     qreal& m_score;
