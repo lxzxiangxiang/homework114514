@@ -92,6 +92,8 @@ namespace EffectDuration {
     inline constexpr float MAGNET    = 5.0f;
     inline constexpr float TRAP      = 3.0f;
     inline constexpr float POISON    = 4.0f;
+    inline constexpr float INITIAL_SHIELD = 3.0f;
+    inline constexpr float EFFECTBALL_LIFETIME = 30.0f;
 }
 
 // ==========================================================================
@@ -103,6 +105,9 @@ namespace EntityRadius {
     inline constexpr float EJECTBALL    = 8.0f;
     inline constexpr float EFFECTBALL   = 12.0f;
     inline constexpr float HAZARD       = 60.0f;
+    inline constexpr float PLAYER_INITIAL = 15.0f;
+    inline constexpr float AI_INITIAL_MIN = 15.0f;
+    inline constexpr float AI_INITIAL_RANGE = 46.0f;
 }
 
 // ==========================================================================
@@ -114,6 +119,11 @@ namespace Spawning {
     inline constexpr int MAX_HAZARD     = 20;
     inline constexpr int AIBALL_COUNT   = 50;
     inline constexpr int MAX_BALLS_PER_AI = 15;
+
+    inline constexpr float SKILL_INTERVAL_MIN = 2.0f;
+    inline constexpr float SKILL_INTERVAL_RANGE = 2.0f;
+    inline constexpr float HAZARD_INTERVAL_MIN = 3.0f;
+    inline constexpr float HAZARD_INTERVAL_RANGE = 3.0f;
 }
 
 // ==========================================================================
@@ -166,7 +176,7 @@ namespace Camera {
 // Gameplay
 // ==========================================================================
 namespace Gameplay {
-    inline constexpr float VICTORY_TOTAL_RADIUS = 500.0f;
+    inline constexpr float VICTORY_TOTAL_RADIUS = 20.0f;
     inline constexpr int SPLIT_DELAY_MS = 100;  // 分裂防连发
 }
 
@@ -178,6 +188,15 @@ namespace HUD {
     inline constexpr int LINE_HEIGHT = 20;
     inline constexpr int MAX_WIDTH = 300;
     inline constexpr int FONT_SIZE = 12;
+
+    namespace Result {
+        inline constexpr double SCORE_LEFT   = 0.53;
+        inline constexpr double SCORE_TOP    = 0.494;
+        inline constexpr double TIME_LEFT    = 0.53;
+        inline constexpr double TIME_TOP     = 0.608;
+        inline constexpr double ITEM_WIDTH   = 0.19;
+        inline constexpr double ITEM_HEIGHT  = 0.065;
+    }
 }
 
 } // namespace GameConstants

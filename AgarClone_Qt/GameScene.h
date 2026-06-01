@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 
 #include "SpatialGrid.h"
+#include "Constants.h"
 
 class Ball;
 class Food;
@@ -11,6 +12,7 @@ class CollisionSystem;
 
 class GameScene : public QGraphicsScene {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(GameScene)
 
 public:
     explicit GameScene(QObject* parent = nullptr);
@@ -21,26 +23,27 @@ public:
     void spawnFood(int count);
     void spawnSkillBall();
     void spawnHazard();
+    void spawnEffectBall(const EffectType* types, int count);
     void spawnAIBall(int targetId = 0);
 
     void addPlayerBall(Ball* ball);
 
-    QList<Ball*> playerBalls;
-    QList<Ball*> aiBalls;
-    QList<Food*> foods;
-    QList<EffectBall*> effectBalls;
+    QList<Ball*> m_playerBalls;
+    QList<Ball*> m_aiBalls;
+    QList<Food*> m_foods;
+    QList<EffectBall*> m_effectBalls;
 
-    qreal score = 0;
-    qreal survivalTime = 0;
-    QPointF playerInputDirection = {0, 0};
-    bool wantSplit = false;
+    qreal m_score = 0;
+    qreal m_survivalTime = 0;
+    QPointF m_playerInputDirection = {0, 0};
+    bool m_wantSplit = false;
 
-    QString hudScoreText;
-    QString hudTimeText;
-    QString hudRadiusText;
-    QString hudAICountText;
-    QString hudEffectsText;
-    QString hudSplitText;
+    QString m_hudScoreText;
+    QString m_hudTimeText;
+    QString m_hudRadiusText;
+    QString m_hudAICountText;
+    QString m_hudEffectsText;
+    QString m_hudSplitText;
 
 signals:
     void splitOccurred();
@@ -48,7 +51,7 @@ signals:
 private:
     void movePlayerBalls(qreal dt);
     void processSplitEject();
-    QList<Ball*> buildAllBalls() const;
+    void buildAllBalls();
     void updateAIBalls(QList<Ball*>& allBalls, qreal dt);
     void updateAllTimers(const QList<Ball*>& allBalls, qreal dt);
     void updateMagnetEffect(const QList<Ball*>& allBalls, qreal dt);
@@ -57,7 +60,9 @@ private:
 
     SpatialGrid m_spatialGrid;
     CollisionSystem* m_collision = nullptr;
+    QList<Ball*> m_allBalls;
     bool m_firstFrame = true;
+    bool m_spawningDone = false;
     qreal m_skillSpawnTimer = 0;
     qreal m_hazardSpawnTimer = 0;
     int m_nextAiId = 1;

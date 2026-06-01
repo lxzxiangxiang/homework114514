@@ -13,9 +13,9 @@ qreal easeOutCubic(qreal t)
 
 Ball::Ball(qreal mass, QColor color, bool isPlayer, int aiLevel)
     : Entity(mass, color)
-    , isPlayer(isPlayer)
-    , aiLevel(aiLevel)
-    , aiId(0)
+    , m_isPlayer(isPlayer)
+    , m_aiLevel(aiLevel)
+    , m_aiId(0)
 {
 }
 
@@ -54,10 +54,12 @@ static QPointF splitDir(QPointF input, qreal lastDx, qreal lastDy)
 
 void Ball::move(qreal dx, qreal dy, qreal dt)
 {
+    if (radius() <= 0) return;
+
     if (dx != 0 || dy != 0) {
         qreal len = std::sqrt(dx * dx + dy * dy);
         if (len > 0) { dx /= len; dy /= len; }
-        lastDx = dx; lastDy = dy;
+        m_lastDx = dx; m_lastDy = dy;
     }
 
     qreal s = speed();
@@ -82,8 +84,8 @@ Ball* Ball::split(QPointF direction)
     qreal newMass = m_mass * GameConstants::Ball::SPLIT_MASS_RETAIN;
     setMass(newMass);
 
-    auto* nb = new Ball(newMass, m_color, isPlayer, aiLevel);
-    nb->aiId = aiId;
+    auto* nb = new Ball(newMass, m_color, m_isPlayer, m_aiLevel);
+    nb->m_aiId = m_aiId;
     nb->m_effects = m_effects;
 
     for (auto& ae : m_effects) {
@@ -95,7 +97,7 @@ Ball* Ball::split(QPointF direction)
             ae.growOriginalMass *= 0.5;
     }
 
-    QPointF dir = splitDir(direction, lastDx, lastDy);
+    QPointF dir = splitDir(direction, m_lastDx, m_lastDy);
     qreal jitter = 1.0 + (QRandomGenerator::global()->generateDouble() - 0.5) * 0.6;
     qreal offset = (nb->radius() * 2.0 + 30.0) * jitter;
 
@@ -158,7 +160,7 @@ void Ball::applyEffect(EffectType et, const QList<Ball*>& allBalls)
 
     for (Ball* other : allBalls) {
         if (other == this || !other->isAlive()) continue;
-        bool sameGroup = (aiId > 0 && other->aiId == aiId) || (isPlayer && other->isPlayer);
+        bool sameGroup = (m_aiId > 0 && other->m_aiId == m_aiId) || (m_isPlayer && other->m_isPlayer);
         if (!sameGroup) continue;
 
         ActiveEffect oae;
@@ -218,8 +220,8 @@ void Ball::update(qreal dt)
             if (ae.type == EffectType::Grow && ae.growOriginalMass > 0) {
                 qreal growFactor = GameConstants::Ball::Grow::RADIUS_MULTIPLIER * GameConstants::Ball::Grow::RADIUS_MULTIPLIER;
                 qreal expectedMass = ae.growOriginalMass * growFactor;
-                if (m_mass > expectedMass) m_mass /= growFactor;
-                else m_mass = ae.growOriginalMass;
+                if (m_mass > expectedMass) setMass(m_mass / growFactor);
+                else setMass(ae.growOriginalMass);
             }
             m_effects.removeAt(i);
         } else if (ae.type == EffectType::Poison) {
@@ -279,7 +281,7 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
     painter->setBrush(Qt::white);
     painter->drawEllipse(QPointF(0, 0), r * 0.3, r * 0.3);
 
-    if (isPlayer) {
+    if (m_isPlayer) {
         painter->setPen(QPen(QColor(100, 255, 100), 3));
         painter->setBrush(Qt::NoBrush);
         painter->drawEllipse(QPointF(0, 0), r * 1.15, r * 1.15);
@@ -291,7 +293,7 @@ void Ball::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
         painter->setPen(QPen(Qt::red, 2));
         painter->setBrush(Qt::NoBrush);
         painter->drawEllipse(QPointF(0, 0), r * 1.1, r * 1.1);
-        if (aiLevel >= 2) {
+        if (m_aiLevel >= 2) {
             qreal ts = r * 0.3;
             QPointF tri[] = { QPointF(0, -ts), QPointF(-ts*0.8, ts*0.5), QPointF(ts*0.8, ts*0.5) };
             painter->setBrush(Qt::red);

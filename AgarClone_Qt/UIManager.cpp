@@ -12,21 +12,9 @@ UIManager::~UIManager()
 {
 }
 
-void UIManager::createMenuItems()
-{
-}
-
 void UIManager::showMenu()
 {
-    if (m_gameOverText)     m_gameOverText->setVisible(false);
-    if (m_gameOverOverlay)  m_gameOverOverlay->setVisible(false);
-    if (m_victoryText)      m_victoryText->setVisible(false);
-    if (m_victoryOverlay)   m_victoryOverlay->setVisible(false);
-}
-
-void UIManager::showPause(const QRectF& sceneRect)
-{
-    Q_UNUSED(sceneRect);
+    hideAllUI();
 }
 
 void UIManager::hideAllUI()
@@ -96,12 +84,12 @@ void UIManager::updateHUD(qreal score, qreal survivalTime, qreal totalMass,
     int minutes = static_cast<int>(survivalTime) / 60;
     int seconds = static_cast<int>(survivalTime) % 60;
 
-    m_scene->hudScoreText   = QStringLiteral("分数: %1").arg(score, 0, 'f', 1);
-    m_scene->hudTimeText    = QStringLiteral("时间: %1:%2").arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
-    m_scene->hudRadiusText  = QStringLiteral("总质量: %1").arg(totalMass, 0, 'f', 1);
-    m_scene->hudAICountText = QStringLiteral("AI: %1").arg(aiCount);
-    m_scene->hudEffectsText = QStringLiteral("效果: ") + effects;
-    m_scene->hudSplitText   = canSplit ? QStringLiteral("分裂: 可") : QStringLiteral("分裂: 不可");
+    m_scene->m_hudScoreText   = QStringLiteral("分数: %1").arg(score, 0, 'f', 1);
+    m_scene->m_hudTimeText    = QStringLiteral("时间: %1:%2").arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
+    m_scene->m_hudRadiusText  = QStringLiteral("总质量: %1").arg(totalMass, 0, 'f', 1);
+    m_scene->m_hudAICountText = QStringLiteral("AI: %1").arg(aiCount);
+    m_scene->m_hudEffectsText = QStringLiteral("效果: ") + effects;
+    m_scene->m_hudSplitText   = canSplit ? QStringLiteral("分裂: 可") : QStringLiteral("分裂: 不可");
 }
 
 void UIManager::clearOverlayRefs()

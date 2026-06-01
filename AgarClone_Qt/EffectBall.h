@@ -19,8 +19,7 @@ private:
     EffectType m_type;
     qreal m_pulseTimer = 0;
     qreal m_lifetime = 0;
-    qreal m_maxLifetime = 30;
-    qreal m_rotation = 0;
+    qreal m_maxLifetime = GameConstants::EffectDuration::EFFECTBALL_LIFETIME;
     qreal m_moveSpeed = 0;
     qreal m_moveAngle = 0;
     qreal m_flashTimer = 0;

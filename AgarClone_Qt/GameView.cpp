@@ -26,7 +26,6 @@ GameView::GameView(QWidget* parent)
 
     m_camera = new CameraController(this, m_gameScene);
     m_ui = new UIManager(m_gameScene, this);
-    m_ui->createMenuItems();
 
     // 窗口配置
     setWindowTitle(QStringLiteral("球球大乱斗"));
@@ -47,25 +46,37 @@ GameView::GameView(QWidget* parent)
     initSoundManager();
 
     {
-        QString appDir = QCoreApplication::applicationDirPath();
-        QStringList menuPaths;
-        menuPaths << appDir + QStringLiteral("/assets/backgrounds/menu.png");
-        menuPaths << appDir + QStringLiteral("/../AgarClone_Qt/assets/backgrounds/menu.png");
-        menuPaths << appDir + QStringLiteral("/../../AgarClone_Qt/assets/backgrounds/menu.png");
-        for (const auto& p : menuPaths) {
-            if (QFileInfo::exists(p) && m_menuBgPixmap.load(p)) break;
-        }
-        if (!m_menuBgPixmap.isNull()) {
-            m_menuBgPixmap = m_menuBgPixmap.scaled(
-                GameConstants::Window::WIDTH, GameConstants::Window::HEIGHT,
-                Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        }
+        QString picDir = findAssetDir({
+            QStringLiteral("assets/gamepicture"),
+            QStringLiteral("../AgarClone_Qt/assets/gamepicture"),
+            QStringLiteral("../../AgarClone_Qt/assets/gamepicture")
+        });
+
+        auto loadPic = [&](QPixmap& pm, const QString& name) {
+            if (!picDir.isEmpty()) {
+                QString path = picDir + QStringLiteral("/") + name;
+                if (QFileInfo::exists(path) && pm.load(path)) {
+                    pm = pm.scaled(
+                        GameConstants::Window::WIDTH, GameConstants::Window::HEIGHT,
+                        Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                }
+            }
+        };
+
+        loadPic(m_menuBgPixmap,    QStringLiteral("menu.jpg"));
+        loadPic(m_pauseBgPixmap,   QStringLiteral("pause.jpg"));
+        loadPic(m_gameOverBgPixmap, QStringLiteral("gameover.jpg"));
+        loadPic(m_victoryBgPixmap,  QStringLiteral("victory.jpg"));
     }
 
     // 初始显示主菜单
     returnToMenu();
 
     scanBackgroundFolder();
+    for (const auto& path : m_backgroundFiles) {
+        QPixmap pm;
+        if (pm.load(path)) m_bgCache.insert(path, pm);
+    }
     selectRandomBackground();
 
     connectSplitSignal();
@@ -78,6 +89,10 @@ GameView::~GameView()
     }
     delete m_camera;
     m_camera = nullptr;
+    if (m_preloadedScene) {
+        delete m_preloadedScene;
+        m_preloadedScene = nullptr;
+    }
 }
 
 // ===== 每帧回调：游戏主循环驱动 =====
@@ -87,10 +102,18 @@ void GameView::advanceGame()
         return;                                         // 非游戏中状态不更新
     }
 
+    if (m_gameJustStarted) {
+        m_gameJustStarted = false;
+        if (m_soundManager) {
+            m_soundManager->playGameMusic();
+            m_soundManager->playStartGameSound();
+        }
+    }
+
     // 1. 处理玩家键盘输入（WASD/方向键/空格/E）
     processPlayerInput();
     // 2. 更新游戏逻辑
-    m_gameScene->updateGame(0.016);
+    m_gameScene->updateGame(GameConstants::Loop::FRAME_INTERVAL_MS / 1000.0);
 
     // 3. 计算玩家总半径并聚合效果数据（一次遍历）
     qreal totalMass = 0;
@@ -99,7 +122,7 @@ void GameView::advanceGame()
     QStringList effectParts;
     QSet<EffectType> seenEffects;
 
-    for (Ball* ball : m_gameScene->playerBalls) {
+    for (Ball* ball : m_gameScene->m_playerBalls) {
         if (!ball->isAlive()) continue;
         totalMass += ball->mass();
         activeCount++;
@@ -125,16 +148,12 @@ void GameView::advanceGame()
         }
     }
 
-    if (m_gameScene->playerBalls.isEmpty() || totalMass <= 0) {
+    if (m_gameScene->m_playerBalls.isEmpty() || totalMass <= 0) {
         gameOver();
         return;
     }
 
     qreal equivalentRadius = std::sqrt(totalMass / M_PI);
-    if (equivalentRadius >= GameConstants::Gameplay::VICTORY_TOTAL_RADIUS * 0.8f
-        && m_soundManager) {
-        m_soundManager->preloadVictoryMusic();
-    }
     if (equivalentRadius >= GameConstants::Gameplay::VICTORY_TOTAL_RADIUS) {
         victory();
         return;
@@ -145,10 +164,10 @@ void GameView::advanceGame()
     QString effects = effectParts.isEmpty() ? QStringLiteral("无") : effectParts.join(QStringLiteral(", "));
 
     m_ui->updateHUD(
-        m_gameScene->score,
-        m_gameScene->survivalTime,
+        m_gameScene->m_score,
+        m_gameScene->m_survivalTime,
         totalMass,
-        m_gameScene->aiBalls.size(),
+        m_gameScene->m_aiBalls.size(),
         effects,
         canSplit
     );
@@ -221,14 +240,6 @@ void GameView::drawBackground(QPainter* painter, const QRectF& rect)
     painter->setBrush(Qt::black);
     painter->drawRect(rect);
 
-    if (m_currentBgIndex >= 0 && m_currentBgIndex < m_backgroundFiles.size()) {
-        if (!m_bgLoaded) {
-            if (!m_bgPixmap.load(m_backgroundFiles.at(m_currentBgIndex))) {
-                qWarning() << "GameView: failed to load background" << m_backgroundFiles.at(m_currentBgIndex);
-            }
-            m_bgLoaded = true;
-        }
-    }
     if (!m_bgPixmap.isNull()) {
         painter->drawTiledPixmap(sceneRect(), m_bgPixmap);
     }
@@ -261,33 +272,66 @@ void GameView::drawForeground(QPainter* painter, const QRectF& rect)
         const int maxWidth = GameConstants::HUD::MAX_WIDTH;
 
         QRectF lineRect(margin, margin, maxWidth, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudScoreText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudScoreText);
         lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudTimeText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudTimeText);
         lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudRadiusText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudRadiusText);
         lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudAICountText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudAICountText);
         lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudEffectsText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudEffectsText);
         lineRect.translate(0, lineHeight);
-        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->hudSplitText);
+        painter->drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, m_gameScene->m_hudSplitText);
     } else if (m_state == State::Paused) {
         const qreal w = width();
         const qreal h = height();
 
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
+        if (!m_pauseBgPixmap.isNull()) {
+            painter->drawPixmap(0, 0, w, h, m_pauseBgPixmap);
+        }
+    } else if (m_state == State::GameOver || m_state == State::Victory) {
+        const qreal w = width();
+        const qreal h = height();
+        QPixmap& bg = m_isVictory ? m_victoryBgPixmap : m_gameOverBgPixmap;
+
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+        if (!bg.isNull()) {
+            painter->drawPixmap(0, 0, w, h, bg);
+        } else {
+            painter->fillRect(0, 0, w, h, QColor(0, 0, 0, 200));
+        }
+
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->fillRect(0, 0, w, h, QColor(0, 0, 0, 150));
 
-        QFont pauseFont("Arial", 36, QFont::Bold);
-        painter->setFont(pauseFont);
+        int minutes = m_resultSurvivalTime / 60;
+        int seconds = m_resultSurvivalTime % 60;
+
+        QFont infoFont("Microsoft YaHei", 22, QFont::Bold);
+        painter->setFont(infoFont);
+        QString scoreText = QStringLiteral("%1").arg(m_resultScore);
+        QString timeText  = QStringLiteral("%1:%2")
+            .arg(minutes).arg(seconds, 2, 10, QLatin1Char('0'));
+
+        QRectF scoreRect(w * GameConstants::HUD::Result::SCORE_LEFT, h * GameConstants::HUD::Result::SCORE_TOP,
+                         w * GameConstants::HUD::Result::ITEM_WIDTH, h * GameConstants::HUD::Result::ITEM_HEIGHT);
+        QRectF timeRect (w * GameConstants::HUD::Result::TIME_LEFT, h * GameConstants::HUD::Result::TIME_TOP,
+                         w * GameConstants::HUD::Result::ITEM_WIDTH, h * GameConstants::HUD::Result::ITEM_HEIGHT);
+
         painter->setPen(Qt::white);
-        painter->drawText(QRectF(0, 0, w, h * 0.5), Qt::AlignCenter, QStringLiteral("已暂停"));
+        painter->drawText(scoreRect, Qt::AlignLeft | Qt::AlignVCenter, scoreText);
+        painter->drawText(timeRect,  Qt::AlignLeft | Qt::AlignVCenter, timeText);
 
-        QFont hintFont("Arial", 14);
-        painter->setFont(hintFont);
-        painter->setPen(QColor(200, 200, 200));
-        painter->drawText(QRectF(0, h * 0.5, w, h * 0.2), Qt::AlignCenter, QStringLiteral("ESC 继续 / M 回菜单"));
+        if (bg.isNull()) {
+            QFont hintFont("Microsoft YaHei", 14);
+            painter->setFont(hintFont);
+            painter->setPen(QColor(200, 200, 200, 220));
+            QRectF hintRect(w * 0.30, h * 0.770, w * 0.45, h * 0.055);
+            painter->drawText(hintRect, Qt::AlignCenter,
+                               QStringLiteral("Enter 重新开始   M 返回菜单"));
+        }
     }
 
     painter->restore();
@@ -296,21 +340,8 @@ void GameView::drawForeground(QPainter* painter, const QRectF& rect)
 // 开始游戏：重建场景和 UI，进入 Playing 状态
 void GameView::startGame()
 {
-    for (Ball* ai : m_gameScene->aiBalls) {
-        AIController::resetState(ai);
-    }
-    setScene(nullptr);
-
+    AIController::resetAll();
     m_ui->clearOverlayRefs();
-
-    m_gameScene->deleteLater();
-    m_gameScene = nullptr;
-
-    m_gameScene = new GameScene(this);
-    setScene(m_gameScene);
-    m_ui->setScene(m_gameScene);
-    m_camera->setScene(m_gameScene);
-    m_ui->createMenuItems();
 
     m_camera->initForStart();
     m_keysPressed.clear();
@@ -318,19 +349,20 @@ void GameView::startGame()
 
     selectRandomBackground();
     if (m_currentBgIndex >= 0 && m_currentBgIndex < m_backgroundFiles.size()) {
-        if (!m_bgPixmap.load(m_backgroundFiles.at(m_currentBgIndex))) {
-            qWarning() << "GameView: failed to load background" << m_backgroundFiles.at(m_currentBgIndex);
+        const auto& path = m_backgroundFiles.at(m_currentBgIndex);
+        auto it = m_bgCache.find(path);
+        if (it != m_bgCache.end()) {
+            m_bgPixmap = it.value();
+        } else if (!m_bgPixmap.load(path)) {
+            qWarning() << "GameView: failed to load background" << path;
+            m_bgPixmap = QPixmap();
         }
     }
-    m_bgLoaded = true;
 
     m_state = State::Playing;
+    m_gameJustStarted = true;
     m_gameTimer->start();
 
-    if (m_soundManager) {
-        m_soundManager->playGameMusic();
-        m_soundManager->playStartGameSound();
-    }
     connectSplitSignal();
 }
 
@@ -359,28 +391,26 @@ void GameView::gameOver()
     m_gameTimer->stop();
     m_camera->reset();
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
-    m_ui->showGameOver(
-        static_cast<int>(m_gameScene->score),
-        static_cast<int>(m_gameScene->survivalTime)
-    );
+    m_resultScore = static_cast<int>(m_gameScene->m_score);
+    m_resultSurvivalTime = static_cast<int>(m_gameScene->m_survivalTime);
+    m_isVictory = false;
     if (m_soundManager) m_soundManager->playGameOverMusic();
+    preloadAndSwitchScene();
 }
 
-// 胜利：停止计时器，显示胜利界面
 void GameView::victory()
 {
     m_state = State::Victory;
     m_gameTimer->stop();
     m_camera->reset();
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
-    m_ui->showVictory(
-        static_cast<int>(m_gameScene->score),
-        static_cast<int>(m_gameScene->survivalTime)
-    );
+    m_resultScore = static_cast<int>(m_gameScene->m_score);
+    m_resultSurvivalTime = static_cast<int>(m_gameScene->m_survivalTime);
+    m_isVictory = true;
     if (m_soundManager) m_soundManager->playVictoryMusic();
+    preloadAndSwitchScene();
 }
 
-// 返回主菜单
 void GameView::returnToMenu()
 {
     m_state = State::Menu;
@@ -391,11 +421,28 @@ void GameView::returnToMenu()
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
     m_ui->showMenu();
     if (m_soundManager) m_soundManager->playMenuMusic();
+
+    preloadAndSwitchScene();
 }
 
-// ===== 处理玩家键盘输入 =====
-// 从 m_keysPressed 读取 WASD/方向键，计算归一化方向向量
-// Space 设置分裂意图
+void GameView::preloadAndSwitchScene()
+{
+    if (!m_preloadedScene) {
+        m_preloadedScene = new GameScene(this);
+
+        setUpdatesEnabled(false);
+        if (m_gameScene && m_gameScene != m_preloadedScene) {
+            m_gameScene->deleteLater();
+        }
+        m_gameScene = m_preloadedScene;
+        m_preloadedScene = nullptr;
+        setScene(m_gameScene);
+        m_ui->setScene(m_gameScene);
+        m_camera->setScene(m_gameScene);
+        setUpdatesEnabled(true);
+    }
+}
+
 void GameView::processPlayerInput()
 {
     qreal dx = 0, dy = 0;
@@ -412,10 +459,10 @@ void GameView::processPlayerInput()
         dy /= len;
     }
 
-    m_gameScene->playerInputDirection = QPointF(dx, dy);
+    m_gameScene->m_playerInputDirection = QPointF(dx, dy);
 
     if (m_splitRequested) {
-        m_gameScene->wantSplit = true;
+        m_gameScene->m_wantSplit = true;
         m_splitRequested = false;
     }
 }
@@ -424,19 +471,11 @@ void GameView::scanBackgroundFolder()
 {
     m_backgroundFiles.clear();
 
-    QStringList searchPaths;
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/assets/backgrounds/");
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../AgarClone_Qt/assets/backgrounds/");
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../../AgarClone_Qt/assets/backgrounds/");
-
-    QString bgDirPath;
-    for (const auto& path : searchPaths) {
-        QDir testDir(path);
-        if (testDir.exists()) {
-            bgDirPath = path;
-            break;
-        }
-    }
+    QString bgDirPath = findAssetDir({
+        QStringLiteral("assets/backgrounds"),
+        QStringLiteral("../AgarClone_Qt/assets/backgrounds"),
+        QStringLiteral("../../AgarClone_Qt/assets/backgrounds")
+    });
 
     if (bgDirPath.isEmpty()) return;
 
@@ -460,20 +499,12 @@ void GameView::selectRandomBackground()
 
 void GameView::initSoundManager()
 {
-    QStringList searchPaths;
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/assets/bgm/");
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../AgarClone_Qt/assets/bgm/");
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../../AgarClone_Qt/assets/bgm/");
-    searchPaths << QCoreApplication::applicationDirPath() + QStringLiteral("/../../../AgarClone_Qt/assets/bgm/");
-
-    QString bgmDir;
-    for (const auto& path : searchPaths) {
-        QDir testDir(path);
-        if (testDir.exists()) {
-            bgmDir = path;
-            break;
-        }
-    }
+    QString bgmDir = findAssetDir({
+        QStringLiteral("assets/bgm"),
+        QStringLiteral("../AgarClone_Qt/assets/bgm"),
+        QStringLiteral("../../AgarClone_Qt/assets/bgm"),
+        QStringLiteral("../../../AgarClone_Qt/assets/bgm")
+    });
 
     if (bgmDir.isEmpty()) return;
 
@@ -485,4 +516,14 @@ void GameView::connectSplitSignal()
     connect(m_gameScene, &GameScene::splitOccurred, this, [this]() {
         if (m_soundManager) m_soundManager->playSplitSound();
     });
+}
+
+QString GameView::findAssetDir(const QStringList& relativePaths)
+{
+    QString appDir = QCoreApplication::applicationDirPath();
+    for (const auto& rel : relativePaths) {
+        QString full = appDir + QStringLiteral("/") + rel;
+        if (QDir(full).exists()) return full;
+    }
+    return {};
 }

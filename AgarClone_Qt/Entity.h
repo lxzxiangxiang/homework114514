@@ -9,6 +9,8 @@
 
 class Entity : public QGraphicsEllipseItem {
 public:
+    Q_DISABLE_COPY_MOVE(Entity)
+
     Entity(qreal mass, QColor color, QGraphicsItem* parent = nullptr)
         : QGraphicsEllipseItem(parent)
         , m_mass(mass)

@@ -37,7 +37,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
 
     // 决策间隔到期，执行新一轮决策
     if (state.decisionTimer <= 0) {
-        int level = ai->aiLevel;
+        int level = ai->m_aiLevel;
         // 根据 AI 等级重置决策间隔
         switch (level) {
         case 1:
@@ -123,15 +123,15 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
         if (level >= 2 && ai->radius() >= GameConstants::Ball::SPLIT_THRESHOLD) {
             int sameIdCount = 0;
             for (Ball* b : allBalls) {
-                if (b->isAlive() && b->aiId == ai->aiId) sameIdCount++;
+                if (b->isAlive() && b->m_aiId == ai->m_aiId) sameIdCount++;
             }
             if (sameIdCount < GameConstants::Spawning::MAX_BALLS_PER_AI) {
                 qreal splitDist = (level >= 3) ? GameConstants::AI::SPLIT_DIST_AGGRESSIVE : GameConstants::AI::SPLIT_DIST_NORMAL;
             if (hasThreat && length(fleeDirection) < myRadius * 3.0) {
-                ai->pendingSplitBall = ai->split(state.currentDirection);
+                ai->m_pendingSplitBall = ai->split(state.currentDirection);
             } else if (hasPrey && length(chaseDirection) < myRadius * splitDist
                        && myRadius > bestPreyRadius * 1.5) {
-                ai->pendingSplitBall = ai->split(state.currentDirection);
+                ai->m_pendingSplitBall = ai->split(state.currentDirection);
             }
             }
         }
@@ -140,7 +140,7 @@ void AIController::updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt)
     // ===== 平滑转向 =====
     // 使用 atan2 计算角度差，以 TURN_RATE×dt 为最大步长做线性插值
     qreal turnSpeed = 0;
-    int level = ai->aiLevel;
+    int level = ai->m_aiLevel;
     switch (level) {
     case 1:
         turnSpeed = GameConstants::AI::Level1::TURN_RATE;
@@ -183,4 +183,9 @@ QPointF AIController::lastDirection(Ball* ai)
 void AIController::resetState(Ball* ai)
 {
     s_states.remove(ai);
+}
+
+void AIController::resetAll()
+{
+    s_states.clear();
 }

@@ -5,14 +5,10 @@
 #include "Constants.h"
 #include <cmath>
 
-CollisionSystem::CollisionSystem(QGraphicsScene* scene, SpatialGrid& spatialGrid,
-                                 QList<Ball*>& playerBalls, QList<Ball*>& aiBalls,
+CollisionSystem::CollisionSystem(SpatialGrid& spatialGrid,
                                  QList<Food*>& foods, QList<EffectBall*>& effectBalls,
                                  qreal& score)
-    : m_scene(scene)
-    , m_spatialGrid(spatialGrid)
-    , m_playerBalls(playerBalls)
-    , m_aiBalls(aiBalls)
+    : m_spatialGrid(spatialGrid)
     , m_foods(foods)
     , m_effectBalls(effectBalls)
     , m_score(score)
@@ -21,8 +17,8 @@ CollisionSystem::CollisionSystem(QGraphicsScene* scene, SpatialGrid& spatialGrid
 
 bool CollisionSystem::sameOwner(const Ball* a, const Ball* b)
 {
-    return (a->isPlayer && b->isPlayer)
-        || (a->aiId > 0 && a->aiId == b->aiId);
+    return (a->m_isPlayer && b->m_isPlayer)
+        || (a->m_aiId > 0 && a->m_aiId == b->m_aiId);
 }
 
 void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
@@ -44,7 +40,7 @@ void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
             if (distSq > contactDist * contactDist) continue;
             if (ball->radius() > food->radius() * GameConstants::Ball::EAT_RATIO) {
                 ball->eat(food);
-                if (ball->isPlayer) m_score += 1;
+                if (ball->m_isPlayer) m_score += 1;
             }
         }
 
@@ -60,11 +56,13 @@ void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
         }
     }
 
+    QList<Entity*> nearbyCache;
     for (Ball* ball1 : allBalls) {
         if (!ball1->isAlive()) continue;
-        QList<Entity*> nearby = m_spatialGrid.nearbyEntities(ball1);
-        for (Entity* e : nearby) {
-            Ball* ball2 = dynamic_cast<Ball*>(e);
+        nearbyCache.clear();
+        m_spatialGrid.queryNearby(ball1->pos().x(), ball1->pos().y(), ball1->radius(), nearbyCache);
+        for (Entity* e : nearbyCache) {
+            Ball* ball2 = static_cast<Ball*>(e);
             if (!ball2 || ball2 == ball1 || !ball2->isAlive()) continue;
             if (std::less<Ball*>()(ball1, ball2)) continue;
 
@@ -86,10 +84,10 @@ void CollisionSystem::checkCollisions(const QList<Ball*>& allBalls)
             } else {
                 if (ball1->radius() > ball2->radius() * GameConstants::Ball::EAT_RATIO && !ball2->hasShield()) {
                     ball1->eat(ball2);
-                    if (ball1->isPlayer) m_score += ball2->radius() * 0.5;
+                    if (ball1->m_isPlayer) m_score += ball2->radius() * 0.5;
                 } else if (ball2->radius() > ball1->radius() * GameConstants::Ball::EAT_RATIO && !ball1->hasShield()) {
                     ball2->eat(ball1);
-                    if (ball2->isPlayer) m_score += ball1->radius() * 0.5;
+                    if (ball2->m_isPlayer) m_score += ball1->radius() * 0.5;
                     break;
                 }
             }
@@ -102,10 +100,10 @@ void CollisionSystem::applyAttraction(const QList<Ball*>& allBalls, qreal dt)
     QHash<int, QList<Ball*>> groups;
     for (Ball* b : allBalls) {
         if (!b->isAlive() || b->isInSplitAnim()) continue;
-        if (b->isPlayer)
+        if (b->m_isPlayer)
             groups[0].append(b);
-        else if (b->aiId > 0)
-            groups[b->aiId].append(b);
+        else if (b->m_aiId > 0)
+            groups[b->m_aiId].append(b);
     }
 
     for (auto it = groups.begin(); it != groups.end(); ++it) {

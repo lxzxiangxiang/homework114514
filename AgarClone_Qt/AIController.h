@@ -18,6 +18,7 @@ public:
     static void updateAI(Ball* ai, const QList<Ball*>& allBalls, qreal dt);
     static QPointF lastDirection(Ball* ai);
     static void resetState(Ball* ai);
+    static void resetAll();
 
 private:
     static QHash<Ball*, AIState> s_states;

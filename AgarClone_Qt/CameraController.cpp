@@ -13,7 +13,7 @@ CameraController::CameraController(QGraphicsView* view, GameScene* scene)
 
 CameraController::ViewTarget CameraController::computeViewTarget() const
 {
-    const auto& balls = m_scene->playerBalls;
+    const auto& balls = m_scene->m_playerBalls;
 
     qreal totalWeight = 0;
     qreal cx = 0, cy = 0;

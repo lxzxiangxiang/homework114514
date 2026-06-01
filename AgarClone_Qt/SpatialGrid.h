@@ -17,6 +17,7 @@ public:
     void remove(Entity* entity);
     QList<Entity*> nearbyEntities(Entity* entity) const;
     QList<Entity*> nearbyEntities(qreal x, qreal y, qreal radius) const;
+    void queryNearby(qreal x, qreal y, qreal radius, QList<Entity*>& outResult) const;
 
 private:
     QHash<std::pair<int, int>, QVector<Entity*>> m_grid;

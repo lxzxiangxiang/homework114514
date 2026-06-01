@@ -40,13 +40,13 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     QRectF boundingRect() const override;
 
-    bool isPlayer;
-    int aiLevel;
-    int aiId;
+    bool m_isPlayer;
+    int m_aiLevel;
+    int m_aiId;
 
-    qreal lastDx = 0, lastDy = 0;
+    qreal m_lastDx = 0, m_lastDy = 0;
 
-    Ball* pendingSplitBall = nullptr;
+    Ball* m_pendingSplitBall = nullptr;
 
 private:
     void removeEffect(EffectType t);

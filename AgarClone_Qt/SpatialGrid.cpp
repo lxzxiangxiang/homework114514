@@ -37,7 +37,12 @@ QList<Entity*> SpatialGrid::nearbyEntities(Entity* entity) const
 QList<Entity*> SpatialGrid::nearbyEntities(qreal x, qreal y, qreal radius) const
 {
     QList<Entity*> result;
+    queryNearby(x, y, radius, result);
+    return result;
+}
 
+void SpatialGrid::queryNearby(qreal x, qreal y, qreal radius, QList<Entity*>& outResult) const
+{
     int cx = static_cast<int>(x) / CELL_SIZE;
     int cy = static_cast<int>(y) / CELL_SIZE;
 
@@ -59,12 +64,10 @@ QList<Entity*> SpatialGrid::nearbyEntities(qreal x, qreal y, qreal radius) const
                     qreal diffY = other->pos().y() - y;
                     qreal distSq = diffX * diffX + diffY * diffY;
                     if (distSq <= searchRadiusSq) {
-                        result.append(other);
+                        outResult.append(other);
                     }
                 }
             }
         }
     }
-
-    return result;
 }

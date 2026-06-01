@@ -8,14 +8,13 @@ class GameScene;
 
 class UIManager : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(UIManager)
 
 public:
     explicit UIManager(GameScene* scene, QObject* parent = nullptr);
     ~UIManager();
 
-    void createMenuItems();
     void showMenu();
-    void showPause(const QRectF& sceneRect);
     void showGameOver(int score, int survivalTime);
     void showVictory(int score, int survivalTime);
     void hideAllUI();

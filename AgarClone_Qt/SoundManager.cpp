@@ -22,39 +22,42 @@ SoundManager::SoundManager(const QString& bgmDir, QObject* parent)
     scanDir(QStringLiteral("failure"), m_failureBgmFiles);
     scanDir(QStringLiteral("success"), m_successBgmFiles);
 
+    if (m_menuBgmFiles.isEmpty())    qWarning() << "SoundManager: no menu BGM found";
+    if (m_gameBgmFiles.isEmpty())    qWarning() << "SoundManager: no game BGM found";
+    if (m_failureBgmFiles.isEmpty()) qWarning() << "SoundManager: no failure BGM found";
+    if (m_successBgmFiles.isEmpty()) qWarning() << "SoundManager: no success BGM found";
+
     m_audioOutput = new QAudioOutput(this);
-    m_audioOutput->setVolume(0.8f);
+    m_audioOutput->setVolume(BGM_VOLUME);
 
     m_bgmPlayer = new QMediaPlayer(this);
     m_bgmPlayer->setAudioOutput(m_audioOutput);
 
     m_eventOutput = new QAudioOutput(this);
-    m_eventOutput->setVolume(0.8f);
+    m_eventOutput->setVolume(BGM_VOLUME);
 
     m_eventPlayer = new QMediaPlayer(this);
     m_eventPlayer->setAudioOutput(m_eventOutput);
 
     m_splitOutput = new QAudioOutput(this);
-    m_splitOutput->setVolume(0.6f);
+    m_splitOutput->setVolume(SFX_VOLUME);
 
     m_splitPlayer = new QMediaPlayer(this);
     m_splitPlayer->setAudioOutput(m_splitOutput);
 
     auto loadEffect = [&](QSoundEffect*& effect, const QString& filename) {
         effect = new QSoundEffect(this);
-        effect->setSource(QUrl::fromLocalFile(bgmDir + QStringLiteral("/sfx/") + filename));
-        if (effect->status() == QSoundEffect::Error) {
-            qWarning() << "SoundManager: failed to load" << filename;
-            delete effect;
-            effect = nullptr;
-            return;
-        }
-        effect->setVolume(0.6f);
+        QString fullPath = bgmDir + QStringLiteral("/sfx/") + filename;
+        connect(effect, &QSoundEffect::statusChanged, this, [effect, filename]() {
+            if (effect->status() == QSoundEffect::Error) {
+                qWarning() << "SoundManager: failed to load" << filename;
+            }
+        });
+        effect->setSource(QUrl::fromLocalFile(fullPath));
+        effect->setVolume(SFX_VOLUME);
     };
 
     loadEffect(m_startGameSound, QStringLiteral("eject.wav"));
-    loadEffect(m_gameOverSound, QStringLiteral("hurt.wav"));
-    loadEffect(m_victorySound, QStringLiteral("skill.wav"));
 
     m_splitPlayer->setSource(QUrl::fromLocalFile(bgmDir + QStringLiteral("/sfx/split.wav")));
 
@@ -73,6 +76,8 @@ SoundManager::~SoundManager()
 {
     m_bgmPlayer->stop();
     m_eventPlayer->stop();
+    m_splitPlayer->stop();
+    if (m_startGameSound) m_startGameSound->stop();
 }
 
 QString SoundManager::randomBgm(const QStringList& list) const
@@ -84,6 +89,7 @@ QString SoundManager::randomBgm(const QStringList& list) const
 
 void SoundManager::playRandomBgm(const QStringList& list)
 {
+    m_eventPlayer->stop();
     QString bgmPath = randomBgm(list);
     if (bgmPath.isEmpty()) return;
     m_bgmPlayer->setSource(QUrl::fromLocalFile(bgmPath));
@@ -105,47 +111,27 @@ void SoundManager::playGameMusic()
         return;
     }
     playRandomBgm(m_gameBgmFiles);
-    preloadEventMusic();
 }
 
 void SoundManager::playGameOverMusic()
 {
-    m_bgmPlayer->stop();
-    m_eventPlayer->stop();
-    if (m_eventPlayer->source().isEmpty()) {
-        QString path = randomBgm(m_failureBgmFiles);
-        if (path.isEmpty()) return;
-        m_eventPlayer->setSource(QUrl::fromLocalFile(path));
-    }
-    m_eventPlayer->setLoops(1);
-    m_eventPlayer->play();
+    playEventMusic(m_failureBgmFiles);
 }
 
 void SoundManager::playVictoryMusic()
 {
+    playEventMusic(m_successBgmFiles);
+}
+
+void SoundManager::playEventMusic(const QStringList& list)
+{
     m_bgmPlayer->stop();
     m_eventPlayer->stop();
-    if (m_eventPlayer->source().isEmpty()) {
-        QString path = randomBgm(m_successBgmFiles);
-        if (path.isEmpty()) return;
-        m_eventPlayer->setSource(QUrl::fromLocalFile(path));
-    }
+    QString path = randomBgm(list);
+    if (path.isEmpty()) return;
+    m_eventPlayer->setSource(QUrl::fromLocalFile(path));
     m_eventPlayer->setLoops(1);
     m_eventPlayer->play();
-}
-
-void SoundManager::preloadEventMusic()
-{
-    QString path = randomBgm(m_failureBgmFiles);
-    if (!path.isEmpty())
-        m_eventPlayer->setSource(QUrl::fromLocalFile(path));
-}
-
-void SoundManager::preloadVictoryMusic()
-{
-    QString path = randomBgm(m_successBgmFiles);
-    if (!path.isEmpty())
-        m_eventPlayer->setSource(QUrl::fromLocalFile(path));
 }
 
 void SoundManager::playSplitSound()
@@ -170,7 +156,6 @@ void SoundManager::pauseMusic()
 {
     if (m_bgmPlayer->playbackState() == QMediaPlayer::PlayingState) {
         m_currentPosition = m_bgmPlayer->position();
-        m_currentBgmIndex = m_gameBgmFiles.indexOf(m_bgmPlayer->source().toLocalFile());
         m_bgmPlayer->pause();
         m_isPaused = true;
     }

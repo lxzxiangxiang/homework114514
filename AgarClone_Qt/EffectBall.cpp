@@ -40,7 +40,6 @@ EffectBall::EffectBall(QPointF pos, EffectType type)
 void EffectBall::update(qreal dt)
 {
     m_pulseTimer += dt * 3;
-    m_rotation += dt * 2;
     m_flashTimer += dt * 5;
     m_lifetime += dt;
 

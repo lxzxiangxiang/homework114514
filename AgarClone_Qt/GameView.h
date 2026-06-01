@@ -15,9 +15,10 @@ class UIManager;
 
 class GameView : public QGraphicsView {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(GameView)
 
 public:
-    enum State : uint8_t { Menu, Playing, Paused, GameOver, Victory };
+    enum State : uint8_t { Menu, Playing, Paused, GameOver, Victory, };
 
     explicit GameView(QWidget* parent = nullptr);
     ~GameView();
@@ -57,10 +58,23 @@ private:
     void initSoundManager();
     void connectSplitSignal();
 
+    void preloadAndSwitchScene();
+
+    static QString findAssetDir(const QStringList& relativePaths);
+
     QStringList m_backgroundFiles;
     int m_currentBgIndex = -1;
     QPixmap m_bgPixmap;
-    bool m_bgLoaded = false;
+    QHash<QString, QPixmap> m_bgCache;
+
+    bool m_gameJustStarted = false;
 
     QPixmap m_menuBgPixmap;
+    QPixmap m_pauseBgPixmap;
+    QPixmap m_gameOverBgPixmap;
+    QPixmap m_victoryBgPixmap;
+    int m_resultScore = 0;
+    int m_resultSurvivalTime = 0;
+    bool m_isVictory = false;
+    GameScene* m_preloadedScene = nullptr;
 };
