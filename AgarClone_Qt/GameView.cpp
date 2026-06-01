@@ -207,7 +207,6 @@ void GameView::keyPressEvent(QKeyEvent* event)
     case State::GameOver:
     case State::Victory:
         if (key == Qt::Key_Return || key == Qt::Key_Enter) {
-            switchToPreloadedScene();
             startGame();
         } else if (key == Qt::Key_M) {
             returnToMenu();
@@ -436,7 +435,7 @@ void GameView::enterResultState(State targetState, bool isVictory)
             m_soundManager->playGameOverMusic();
         }
     }
-    preloadAndSwitchScene();
+    switchToPreloadedScene();
 }
 
 void GameView::returnToMenu()
@@ -447,6 +446,7 @@ void GameView::returnToMenu()
     }
     m_camera->reset();
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
+    switchToPreloadedScene();
     m_ui->showMenu();
     if (m_soundManager) m_soundManager->playMenuMusic();
 }
@@ -539,7 +539,7 @@ void GameView::connectSplitSignal()
 {
     connect(m_gameScene, &GameScene::splitOccurred, this, [this]() {
         if (m_soundManager) m_soundManager->playSplitSound();
-    }, Qt::UniqueConnection);
+    });
 }
 
 QString GameView::findAssetDir(const QStringList& relativePaths)
