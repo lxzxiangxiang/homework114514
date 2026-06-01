@@ -190,7 +190,8 @@ void GameView::keyPressEvent(QKeyEvent* event)
         // 游戏中：ESC 暂停；WASD/Space/E 记录按键
         if (key == Qt::Key_Escape) {
             pauseGame();
-        } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D) {
+        } else if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D
+                   || key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Left || key == Qt::Key_Right) {
             m_keysPressed.insert(key);
         }
         if (key == Qt::Key_Space && !event->isAutoRepeat()) {
@@ -387,27 +388,30 @@ void GameView::resumeGame()
 // 游戏结束：停止计时器，显示结束界面（分数 + 生存时间）
 void GameView::gameOver()
 {
-    m_state = State::GameOver;
-    m_gameTimer->stop();
-    m_camera->reset();
-    centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
-    m_resultScore = static_cast<int>(m_gameScene->m_score);
-    m_resultSurvivalTime = static_cast<int>(m_gameScene->m_survivalTime);
-    m_isVictory = false;
-    if (m_soundManager) m_soundManager->playGameOverMusic();
-    preloadAndSwitchScene();
+    enterResultState(State::GameOver, false);
 }
 
 void GameView::victory()
 {
-    m_state = State::Victory;
+    enterResultState(State::Victory, true);
+}
+
+void GameView::enterResultState(State targetState, bool isVictory)
+{
+    m_state = targetState;
     m_gameTimer->stop();
     m_camera->reset();
     centerOn(GameConstants::Window::WIDTH / 2, GameConstants::Window::HEIGHT / 2);
     m_resultScore = static_cast<int>(m_gameScene->m_score);
     m_resultSurvivalTime = static_cast<int>(m_gameScene->m_survivalTime);
-    m_isVictory = true;
-    if (m_soundManager) m_soundManager->playVictoryMusic();
+    m_isVictory = isVictory;
+    if (m_soundManager) {
+        if (isVictory) {
+            m_soundManager->playVictoryMusic();
+        } else {
+            m_soundManager->playGameOverMusic();
+        }
+    }
     preloadAndSwitchScene();
 }
 
@@ -515,7 +519,7 @@ void GameView::connectSplitSignal()
 {
     connect(m_gameScene, &GameScene::splitOccurred, this, [this]() {
         if (m_soundManager) m_soundManager->playSplitSound();
-    });
+    }, Qt::UniqueConnection);
 }
 
 QString GameView::findAssetDir(const QStringList& relativePaths)

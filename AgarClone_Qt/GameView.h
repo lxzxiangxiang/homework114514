@@ -49,6 +49,7 @@ private:
     void resumeGame();
     void gameOver();
     void victory();
+    void enterResultState(State targetState, bool isVictory);
     void returnToMenu();
     void processPlayerInput();
 
